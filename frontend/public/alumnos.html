@@ -1,0 +1,3609 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mediloop · Área de alumnos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --blue: #2563eb;
+        --indigo: #4f46e5;
+        --green: #059669;
+        --purple: #7c3aed;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-900: #111827;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--gray-50);
+        color: var(--gray-900);
+      }
+      .header {
+        background: linear-gradient(135deg, var(--blue), var(--indigo));
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .header .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .header .logo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+      }
+      .header .logo-mark { width: 36px; height: 36px; flex-shrink: 0; }
+      .header .logo-mark svg { width: 100%; height: 100%; display: block; }
+      .header .logo-text { color: #fff; font-weight: 700; font-size: 1.1rem; }
+      .header nav { display: flex; gap: 1.5rem; align-items: center; }
+      .header nav a { color: rgba(255,255,255,0.95); text-decoration: none; font-size: 0.9rem; }
+      .header nav a:hover { color: #fff; }
+      .header .user-block {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .header .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .header .user-name { color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 500; }
+      .header .user-block .salir {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+        border: 1px solid rgba(255,255,255,0.5);
+        border-radius: 8px;
+      }
+      .header .user-block .salir:hover { background: rgba(255,255,255,0.15); color: #fff; }
+      .header .user-block .landing-link {
+        color: rgba(255,255,255,0.95);
+        text-decoration: none;
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+        border: 1px solid rgba(255,255,255,0.35);
+        border-radius: 8px;
+      }
+      .header .user-block .landing-link:hover { background: rgba(255,255,255,0.12); color: #fff; }
+      .hero {
+        background: linear-gradient(to bottom right, #2563eb 0%, #4f46e5 50%, #6366f1 100%);
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+      .hero h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #fff;
+      }
+      .hero p {
+        margin: 0 0 1.75rem;
+        color: rgba(255,255,255,0.95);
+        font-size: 1.05rem;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero .btn {
+        display: inline-block;
+        padding: 0.9rem 2rem;
+        border-radius: 12px;
+        background: #fff;
+        color: var(--blue);
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+      }
+      .resumen-wrap {
+        max-width: 1000px;
+        margin: -2rem auto 0;
+        padding: 0 1.5rem 2rem;
+      }
+      .resumen-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 1.25rem 1.5rem;
+      }
+      .resumen-card h3 {
+        margin: 0 0 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-900);
+      }
+      .resumen-list { display: flex; flex-direction: column; gap: 0.75rem; }
+      .resumen-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .resumen-item:last-child { border-bottom: none; }
+      .resumen-item .icono {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.1rem;
+      }
+      .resumen-item .icono.rotacion { background: #dbeafe; color: var(--blue); }
+      .resumen-item .icono.tarea { background: #fef3c7; color: #b45309; }
+      .resumen-item .icono.evento { background: #d1fae5; color: var(--green); }
+      .resumen-item .titulo { font-weight: 600; font-size: 0.9rem; color: var(--gray-900); }
+      .resumen-item .detalle { font-size: 0.85rem; color: var(--gray-600); margin-top: 0.15rem; }
+      .resumen-item a.titulo { text-decoration: none; color: var(--gray-900); }
+      .resumen-item a.titulo:hover { color: var(--blue); }
+      .section {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+      .section-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        color: var(--gray-900);
+      }
+      .section-desc {
+        text-align: center;
+        color: var(--gray-600);
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        padding: 1.4rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+      }
+      .centros-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .centro-card .icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+        background: var(--blue);
+        color: #fff;
+      }
+      .centro-card .icon-wrap svg { width: 26px; height: 26px; }
+      .centro-card h3 { margin: 0 0 0.35rem; font-size: 1.05rem; font-weight: 700; }
+      .centro-card .stars { color: #eab308; font-size: 0.9rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+      .centro-card p { margin: 0 0 0.75rem; font-size: 0.9rem; color: var(--gray-600); }
+      .centro-card .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+      .centro-card .tag {
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+      }
+      .centro-card .tag.blue { background: #dbeafe; color: var(--blue); }
+      .centro-card .tag.green { background: #d1fae5; color: var(--green); }
+      .centro-card .tag.purple { background: #ede9fe; color: var(--purple); }
+      .centro-card .btn-card {
+        display: block;
+        text-align: center;
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      .centro-card .btn-card.blue { background: var(--blue); }
+      .centro-card .btn-card.green { background: var(--green); }
+      .centro-card .btn-card.purple { background: var(--purple); }
+      .rotaciones-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+      }
+      .rotacion-card {
+        position: relative;
+        border-left: 4px solid var(--gray-200);
+      }
+      .rotacion-card.borde-green { border-left-color: #10b981; }
+      .rotacion-card.borde-blue { border-left-color: var(--blue); }
+      .rotacion-card.borde-gray { border-left-color: var(--gray-200); }
+      .rotacion-card .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .rotacion-card .badge.completada { background: #d1fae5; color: var(--green); }
+      .rotacion-card .badge.en-curso { background: #dbeafe; color: var(--blue); }
+      .rotacion-card .badge.proxima { background: var(--gray-200); color: var(--gray-600); }
+      .rotacion-card .icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.6rem;
+      }
+      .rotacion-card .icon-wrap.green { background: #d1fae5; color: var(--green); }
+      .rotacion-card .icon-wrap.blue { background: #dbeafe; color: var(--blue); }
+      .rotacion-card .icon-wrap.gray { background: var(--gray-200); color: var(--gray-600); }
+      .rotacion-card h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+      .rotacion-card .sub { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 0.6rem; }
+      .rotacion-card .meta { font-size: 0.85rem; color: var(--gray-700); }
+      .rotacion-card .meta .ok { color: var(--green); }
+      .rotacion-card .progress-bar {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--gray-200);
+        margin-top: 0.4rem;
+        overflow: hidden;
+      }
+      .rotacion-card .progress-bar span { display: block; height: 100%; border-radius: 999px; background: var(--blue); }
+      .dos-columnas {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .competencia-item { margin-bottom: 0.9rem; }
+      .competencia-item .row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+      .competencia-item .dot { width: 8px; height: 8px; border-radius: 50%; }
+      .competencia-item .bar { height: 8px; border-radius: 999px; background: var(--gray-200); overflow: hidden; }
+      .competencia-item .bar span { display: block; height: 100%; border-radius: 999px; }
+      .competencia-item .nivel { font-size: 0.8rem; color: var(--gray-600); }
+      .calendario-item {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .calendario-item:last-child { border-bottom: none; }
+      .calendario-item .line { width: 4px; border-radius: 2px; flex-shrink: 0; }
+      .calendario-item .time { font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 6px; }
+      .btn-gradient { background: linear-gradient(90deg, var(--blue), var(--indigo)); color: #fff; padding: 0.6rem 1rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; }
+      .btn-outline { background: #fff; color: var(--blue); border: 1px solid var(--blue); padding: 0.6rem 1rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+      .recursos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+      }
+      .recurso-card { position: relative; }
+      .recurso-card .icon-wrap {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+      }
+      .recurso-card { background: #f0f9ff; }
+      .recurso-card:nth-child(2) { background: #f0fdf4; }
+      .recurso-card:nth-child(3) { background: #faf5ff; }
+      .recurso-card .icon-wrap.blue { background: var(--blue); color: #fff; }
+      .recurso-card .icon-wrap.green { background: var(--green); color: #fff; }
+      .recurso-card .icon-wrap.purple { background: var(--purple); color: #fff; }
+      .recurso-card h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 700; }
+      .recurso-card p { margin: 0 0 0.5rem; font-size: 0.88rem; color: var(--gray-600); }
+      .recurso-card a { font-size: 0.9rem; font-weight: 500; text-decoration: none; }
+      .recurso-card a.blue { color: var(--blue); }
+      .recurso-card a.green { color: var(--green); }
+      .recurso-card a.purple { color: var(--purple); }
+      .tabs {
+        display: inline-flex;
+        background: var(--gray-200);
+        border-radius: 999px;
+        padding: 0.25rem;
+        margin-bottom: 1.5rem;
+      }
+      .tabs button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        background: transparent;
+        color: var(--gray-600);
+        cursor: pointer;
+      }
+      .tabs button.active { background: var(--blue); color: #fff; }
+      .mapa-wrap {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .mapa-schema {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1fr;
+        grid-template-rows: auto 1fr 1fr;
+        gap: 0.75rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 1rem;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+      .mapa-block {
+        padding: 0.75rem;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        position: relative;
+      }
+      .mapa-block .qr { position: absolute; top: 0.25rem; right: 0.25rem; font-size: 0.65rem; color: var(--gray-600); }
+      .mapa-block.red { background: #fee2e2; color: #991b1b; }
+      .mapa-block.blue { background: #dbeafe; color: #1e40af; }
+      .mapa-block.green { background: #d1fae5; color: #065f46; }
+      .mapa-block.orange { background: #ffedd5; color: #9a3412; }
+      .mapa-block.purple { background: #ede9fe; color: #5b21b6; }
+      .mapa-block .name { font-weight: 700; }
+      .mapa-block .desc { font-size: 0.75rem; opacity: 0.9; }
+      .leyenda { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 1rem; font-size: 0.8rem; color: var(--gray-600); }
+      .leyenda span { display: flex; align-items: center; gap: 0.35rem; }
+      .leyenda .cuadro { width: 12px; height: 12px; border-radius: 3px; }
+      .qr-instructions {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--blue);
+      }
+      .qr-instructions h4 { margin: 0 0 0.5rem; color: var(--blue); font-size: 0.95rem; }
+      .qr-instructions ul { margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--gray-600); line-height: 1.6; }
+      .apoyo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+      }
+      .apoyo-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        padding: 1.25rem;
+      }
+      .apoyo-card h4 {
+        margin: 0 0 0.75rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .apoyo-card h4 .emoji { font-size: 1.2rem; }
+      .apoyo-card .tutor-info { font-size: 0.9rem; color: var(--gray-700); }
+      .apoyo-card .tutor-info .nombre { font-weight: 600; color: var(--gray-900); }
+      .apoyo-card .tutor-info a { color: var(--blue); text-decoration: none; }
+      .apoyo-card .tutor-info a:hover { text-decoration: underline; }
+      .apoyo-checklist { list-style: none; margin: 0; padding: 0; }
+      .apoyo-checklist li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0;
+        font-size: 0.9rem;
+        color: var(--gray-700);
+      }
+      .apoyo-checklist li::before {
+        content: "☐";
+        font-size: 1.1rem;
+        color: var(--gray-600);
+      }
+      .apoyo-contactos { font-size: 0.9rem; color: var(--gray-700); }
+      .apoyo-contactos p { margin: 0 0 0.5rem; }
+      .apoyo-contactos a { color: var(--blue); text-decoration: none; }
+      .apoyo-contactos a:hover { text-decoration: underline; }
+      .apoyo-normativa { font-size: 0.88rem; color: var(--gray-600); line-height: 1.55; }
+      .apoyo-normativa ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+      .comunidad-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+      .noti-wrap {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+        overflow: hidden;
+      }
+      .noti-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .noti-head .unread {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #1e40af;
+        background: #dbeafe;
+        border-radius: 999px;
+        padding: 0.22rem 0.65rem;
+      }
+      .noti-list { display: flex; flex-direction: column; }
+      .noti-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.8rem;
+        align-items: start;
+        padding: 0.95rem 1.2rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+      .noti-item:last-child { border-bottom: none; }
+      .noti-item.nueva { background: #f8fbff; }
+      .noti-item .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 0.35rem;
+      }
+      .noti-item .dot.blue { background: var(--blue); }
+      .noti-item .dot.green { background: var(--green); }
+      .noti-item .dot.purple { background: var(--purple); }
+      .noti-item .dot.orange { background: #f59e0b; }
+      .noti-item h4 {
+        margin: 0 0 0.25rem;
+        font-size: 0.95rem;
+      }
+      .noti-item p {
+        margin: 0;
+        color: var(--gray-600);
+        font-size: 0.86rem;
+      }
+      .noti-item .time {
+        font-size: 0.76rem;
+        color: var(--gray-600);
+        white-space: nowrap;
+      }
+      .post-card, .grupo-card {
+        display: flex;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      }
+      .post-card { border-left: 4px solid var(--blue); }
+      .post-card.verde { border-left-color: var(--green); }
+      .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+      .avatar.blue { background: var(--blue); }
+      .avatar.green { background: var(--green); }
+      .post-card .content { flex: 1; }
+      .post-card .author { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+      .post-card .text { font-size: 0.88rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+      .post-card .meta { font-size: 0.8rem; color: var(--gray-600); }
+      .grupo-card { border-left: 4px solid var(--blue); }
+      .grupo-card.verde { border-left-color: var(--green); }
+      .grupo-card.purple { border-left-color: var(--purple); }
+      .grupo-card h4 { margin: 0 0 0.25rem; font-size: 0.95rem; }
+      .grupo-card p { margin: 0 0 0.5rem; font-size: 0.85rem; color: var(--gray-600); }
+      .grupo-card .foot { display: flex; justify-content: space-between; align-items: center; }
+      .grupo-card .miembros { font-size: 0.8rem; color: var(--gray-600); }
+      .grupo-card .btn-join { padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; color: #fff; }
+      .grupo-card .btn-join.blue { background: var(--blue); }
+      .grupo-card .btn-join.green { background: var(--green); }
+      .grupo-card .btn-join.purple { background: var(--purple); }
+      .footer-mini {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 3rem;
+        text-align: center;
+        border-top: 1px solid var(--gray-200);
+        background: var(--gray-50);
+      }
+      .footer-mini .brand { font-size: 0.9rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+      .footer-mini .brand strong { color: var(--gray-900); }
+      .footer-mini a {
+        font-size: 0.85rem;
+        color: var(--blue);
+        text-decoration: none;
+      }
+      .footer-mini a:hover { text-decoration: underline; }
+      .footer-mini .acciones {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .app-status {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        min-width: 280px;
+        max-width: 90vw;
+        border-radius: 10px;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        z-index: 200;
+      }
+      .app-status.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .app-status.success {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+      }
+      .app-status.info {
+        background: #dbeafe;
+        color: #1e3a8a;
+        border: 1px solid #93c5fd;
+      }
+      .app-status.error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+      }
+      .sys-indicator {
+        position: fixed;
+        top: 0.8rem;
+        right: 0.8rem;
+        z-index: 210;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        background: rgba(17, 24, 39, 0.86);
+        color: #fff;
+        padding: 0.4rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+      }
+      .sys-indicator .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #9ca3af;
+      }
+      .sys-indicator.ok .dot { background: #22c55e; }
+      .sys-indicator.warn .dot { background: #f59e0b; }
+      .sys-indicator.err .dot { background: #ef4444; }
+      .side-nav {
+        position: fixed;
+        left: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 205;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        padding: 0.5rem;
+      }
+      .side-nav a {
+        text-decoration: none;
+        font-size: 0.76rem;
+        color: #4b5563;
+        border-radius: 8px;
+        padding: 0.35rem 0.55rem;
+        white-space: nowrap;
+      }
+      .side-nav a:hover {
+        background: #eef2ff;
+        color: #3730a3;
+      }
+      .side-nav a.active {
+        background: linear-gradient(90deg, #2563eb, #4f46e5);
+        color: #fff;
+      }
+      .side-nav.compact {
+        width: 42px;
+        overflow: hidden;
+      }
+      .side-nav.compact a {
+        text-indent: -9999px;
+        padding: 0.35rem 0;
+        text-align: center;
+      }
+      .side-nav.compact a::before {
+        content: "•";
+        text-indent: 0;
+        display: block;
+        font-size: 0.95rem;
+      }
+      .side-nav-toggle {
+        border: none;
+        border-radius: 10px;
+        background: #111827;
+        color: #fff;
+        font-size: 0.88rem;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pref-actions {
+        position: fixed;
+        left: 0.9rem;
+        bottom: 1rem;
+        z-index: 206;
+        display: flex;
+        gap: 0.45rem;
+      }
+      .pref-btn {
+        border: none;
+        border-radius: 10px;
+        background: #1f2937;
+        color: #fff;
+        font-size: 0.9rem;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pref-btn:hover,
+      .side-nav-toggle:hover {
+        background: #111827;
+      }
+      .pref-btn[data-tip],
+      .side-nav-toggle[data-tip] {
+        position: relative;
+      }
+      .pref-btn[data-tip]::after,
+      .side-nav-toggle[data-tip]::after {
+        content: attr(data-tip);
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 8px);
+        transform: translateX(-50%) translateY(4px);
+        background: rgba(17, 24, 39, 0.96);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        white-space: nowrap;
+        padding: 0.3rem 0.5rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.16s ease 0.15s, transform 0.16s ease 0.15s;
+      }
+      .pref-btn[data-tip]::before,
+      .side-nav-toggle[data-tip]::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 2px);
+        transform: translateX(-50%) translateY(4px);
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid rgba(17, 24, 39, 0.96);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.16s ease 0.15s, transform 0.16s ease 0.15s;
+      }
+      .pref-btn[data-tip]:hover::after,
+      .side-nav-toggle[data-tip]:hover::after,
+      .pref-btn[data-tip]:focus-visible::after,
+      .side-nav-toggle[data-tip]:focus-visible::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .pref-btn[data-tip]:hover::before,
+      .side-nav-toggle[data-tip]:hover::before,
+      .pref-btn[data-tip]:focus-visible::before,
+      .side-nav-toggle[data-tip]:focus-visible::before {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .scroll-top-btn {
+        position: fixed;
+        right: 1.1rem;
+        bottom: 5rem;
+        z-index: 206;
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 50%;
+        background: #111827;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .scroll-top-btn.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      @media (max-width: 1200px) {
+        .side-nav { display: none; }
+        .pref-actions { display: none; }
+      }
+      @media (max-width: 768px) {
+        .header { padding: 0.75rem 1rem; }
+        .header nav { display: none; }
+        .header .user-name { display: none; }
+        .header .landing-link { display: none; }
+        .hero { padding: 2.5rem 1rem 2rem; }
+        .hero h1 { font-size: 1.6rem; }
+        .hero p { font-size: 0.95rem; }
+        .section { padding: 2rem 1rem; }
+        .section-title { font-size: 1.3rem; }
+        .resumen-wrap { padding: 0 1rem 1.5rem; }
+        .mapa-schema { grid-template-columns: 1fr; }
+        .dos-columnas { grid-template-columns: 1fr; }
+        .comunidad-grid { grid-template-columns: 1fr; }
+        .centros-grid { grid-template-columns: 1fr; }
+        .apoyo-grid { grid-template-columns: 1fr; }
+        .recursos-grid { grid-template-columns: 1fr; }
+        .rotaciones-grid { grid-template-columns: 1fr; }
+        .tabs { width: 100%; justify-content: center; }
+      }
+      .help-fab {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--blue);
+        color: #fff;
+        border: none;
+        font-size: 1.25rem;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+      }
+      /* Pre-rotation and AI training zone styles */
+      .prep-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .prep-select {
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--gray-200);
+        font-size: 0.9rem;
+        background: #fff;
+        outline: none;
+        min-width: 260px;
+        max-width: 100%;
+      }
+      .prep-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .prep-section-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        border: 1px solid #f3f4f6;
+      }
+      .prep-section-card h3 {
+        margin: 0 0 0.85rem;
+        font-size: 1.05rem;
+        color: var(--blue);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 2px solid #eff6ff;
+        padding-bottom: 0.5rem;
+      }
+      .prep-section-card p, .prep-section-card li {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--gray-700);
+      }
+      .diagnoses-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+        margin-top: 0.5rem;
+      }
+      .diagnoses-table th, .diagnoses-table td {
+        padding: 0.5rem;
+        border: 1px solid var(--gray-200);
+        text-align: left;
+        vertical-align: top;
+      }
+      .diagnoses-table th {
+        background: var(--gray-100);
+        font-weight: 600;
+      }
+      .checklist-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+      }
+      .checklist-item input {
+        margin-top: 0.15rem;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+      }
+      .checklist-item label {
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .self-assessment-card {
+        background: linear-gradient(to bottom right, #fff, #f8fafc);
+        border: 1px solid #e2e8f0;
+      }
+      .epa-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-top: 1rem;
+      }
+      .epa-row {
+        background: #fff;
+        border: 1px solid var(--gray-100);
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+      }
+      .epa-row-title {
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 0.65rem;
+        color: var(--gray-900);
+      }
+      .rating-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .rating-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid var(--gray-200);
+        background: #fff;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+      }
+      .rating-btn:hover {
+        background: #eff6ff;
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+      .rating-btn.selected {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+      .rating-label {
+        font-size: 0.8rem;
+        color: var(--gray-600);
+        margin-left: 0.5rem;
+      }
+      .feedback-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+      .likert-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--gray-100);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .likert-row label {
+        font-size: 0.88rem;
+        color: var(--gray-800);
+        max-width: 60%;
+      }
+      .likert-scale {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .likert-scale span {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        border: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: #fff;
+        cursor: pointer;
+      }
+      .likert-scale span.active {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+      .ai-chat-widget {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        background: #fff;
+        overflow: hidden;
+      }
+      .ai-chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .ai-msg {
+        max-width: 80%;
+        padding: 0.6rem 0.85rem;
+        border-radius: 12px;
+        font-size: 0.88rem;
+        line-height: 1.4;
+      }
+      .ai-msg.user {
+        align-self: flex-end;
+        background: var(--blue);
+        color: #fff;
+        border-radius: 12px 12px 2px 12px;
+      }
+      .ai-msg.bot {
+        align-self: flex-start;
+        background: var(--gray-100);
+        color: var(--gray-900);
+        border-radius: 12px 12px 12px 2px;
+      }
+      .ai-citation {
+        display: block;
+        margin-top: 0.4rem;
+        font-size: 0.75rem;
+        color: var(--indigo);
+        font-weight: 600;
+      }
+      .floating-ai-btn {
+        position: fixed;
+        bottom: 5.5rem;
+        right: 1.5rem;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--blue), var(--indigo));
+        color: #fff;
+        border: none;
+        font-size: 1.3rem;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .floating-ai-window {
+        position: fixed;
+        bottom: 9rem;
+        right: 1.5rem;
+        width: 320px;
+        height: 420px;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border: 1px solid var(--gray-200);
+        z-index: 200;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .floating-ai-header {
+        background: linear-gradient(135deg, var(--blue), var(--indigo));
+        color: #fff;
+        padding: 0.85rem 1rem;
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .socratic-container {
+        padding: 1.25rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="side-nav" aria-label="Navegación rápida">
+      <a href="#hospitales" data-spy="hospitales">Hospitales</a>
+      <a href="#progreso" data-spy="progreso">Progreso</a>
+      <a href="#pre-rotacion" data-spy="pre-rotacion">Pre-Rotación</a>
+      <a href="#training-zone" data-spy="training-zone">Entrenamiento IA</a>
+      <a href="#apoyo" data-spy="apoyo">Apoyo</a>
+      <a href="#recursos" data-spy="recursos">Recursos</a>
+      <a href="#biblioteca-docente" data-spy="biblioteca-docente">Biblioteca</a>
+      <a href="#mapa-hospital" data-spy="mapa-hospital">Asistencia</a>
+      <a href="#novedades" data-spy="novedades">Novedades</a>
+      <a href="#comunidad" data-spy="comunidad">Comunidad</a>
+      <a href="#mensajes" data-spy="mensajes">Mensajes <span id="msg-badge-side" style="display:none;background:#ef4444;color:#fff;border-radius:9999px;font-size:0.65rem;padding:0 5px;vertical-align:middle;margin-left:2px"></span></a>
+    </aside>
+    <div class="pref-actions">
+      <button type="button" id="go-back-btn" class="pref-btn" data-tip="Atrás" aria-label="Atrás">←</button>
+      <button type="button" id="reset-section-btn" class="pref-btn" data-tip="Olvidar última sección" aria-label="Olvidar última sección">⌫</button>
+      <button type="button" id="undo-prefs-btn" class="pref-btn" data-tip="Deshacer preferencias" aria-label="Deshacer preferencias">↺</button>
+      <button type="button" id="side-nav-toggle" class="side-nav-toggle" data-tip="Compactar barra lateral" aria-label="Compactar barra lateral">☰</button>
+    </div>
+    <header class="header">
+      <div class="logo">
+        <a href="index.html" class="logo-link" aria-label="Ir al inicio">
+        <div class="logo-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="logo-blur-header" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="0.4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect x="18" y="6" width="16" height="16" rx="4" fill="#c2cfff" opacity="0.95"/>
+            <rect x="12" y="12" width="16" height="16" rx="4" fill="#8a9eff" opacity="0.95"/>
+            <rect x="6" y="18" width="16" height="16" rx="4" fill="#4f46e5" filter="url(#logo-blur-header)"/>
+          </svg>
+        </div>
+        <span class="logo-text">Mediloop</span>
+        </a>
+      </div>
+      <nav>
+        <a href="#hospitales">Hospitales</a>
+        <a href="#progreso">Progreso</a>
+        <a href="#pre-rotacion">Pre-Rotación</a>
+        <a href="#training-zone">Entrenamiento IA</a>
+        <a href="#apoyo">Apoyo</a>
+        <a href="#recursos">Recursos</a>
+        <a href="#biblioteca-docente">Biblioteca</a>
+        <a href="#novedades">Novedades</a>
+        <a href="#comunidad">Comunidad</a>
+        <a href="#mensajes">Mensajes <span id="msg-badge-nav" style="display:none;background:#ef4444;color:#fff;border-radius:9999px;font-size:0.65rem;padding:0 5px;vertical-align:middle"></span></a>
+      </nav>
+      <div class="user-block">
+        <button type="button" id="btn-perfil-alumno" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:34px;height:34px;color:#fff;font-size:1rem;cursor:pointer;font-weight:700" title="Mi perfil">?</button>
+        <span class="user-name" id="user-name-header">Ana M.</span>
+        <a href="index.html" class="landing-link">Landing</a>
+        <a href="index.html" class="salir">Salir</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Tu Futuro Médico Comienza Aquí</h1>
+      <p>Conecta con los mejores hospitales, desarrolla tus habilidades y únete a una comunidad de futuros profesionales de la salud.</p>
+      <a href="#hospitales" class="btn">Explorar Oportunidades</a>
+    </section>
+
+    <div class="resumen-wrap">
+      <div class="resumen-card">
+        <h3>Tu resumen</h3>
+        <div class="resumen-list">
+          <div class="resumen-item">
+            <span class="icono rotacion">🛏</span>
+            <div>
+              <span class="titulo">Cargando rotación...</span>
+              <p class="detalle">Conectando con el servidor...</p>
+            </div>
+          </div>
+          <div class="resumen-item" id="resumen-asistencia">
+            <span class="icono tarea">✅</span>
+            <div>
+              <span class="titulo">Asistencia pendiente de confirmación</span>
+              <p class="detalle">Cargando...</p>
+            </div>
+          </div>
+          <div class="resumen-item" id="resumen-evaluaciones">
+            <span class="icono evento">📋</span>
+            <div>
+              <a href="#progreso" class="titulo">Evaluaciones recibidas</a>
+              <p class="detalle">Cargando...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" id="hospitales">
+      <h2 class="section-title">Centros Sanitarios de Castellón</h2>
+      <p class="section-desc">Colaboramos con los principales centros de salud de la provincia para ofrecerte las mejores oportunidades de formación práctica.</p>
+      <div class="centros-grid">
+        <article class="card centro-card">
+          <div class="icon-wrap blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <h3>Hospital General Universitario de Castellón</h3>
+          <div class="stars">★★★★★ (4.8)</div>
+          <p>Hospital de referencia con todas las especialidades médicas y quirúrgicas. Centro docente universitario.</p>
+          <div class="tags">
+            <span class="tag blue">Urgencias 24h</span>
+            <span class="tag blue">UCI</span>
+            <span class="tag blue">Quirófanos</span>
+          </div>
+          <button type="button" class="btn-card blue js-go" data-target="mapa-hospital">Ver Detalles</button>
+        </article>
+        <article class="card centro-card">
+          <div class="icon-wrap blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <h3>Centro de Salud 9 de Octubre</h3>
+          <div class="stars">★★★★★ (4.6)</div>
+          <p>Atención primaria integral en el centro de Castellón. Medicina familiar y comunitaria.</p>
+          <div class="tags">
+            <span class="tag green">Medicina Familiar</span>
+            <span class="tag green">Pediatría</span>
+            <span class="tag green">Enfermería</span>
+          </div>
+          <button type="button" class="btn-card green js-go" data-target="mapa-hospital">Ver Detalles</button>
+        </article>
+        <article class="card centro-card">
+          <div class="icon-wrap blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <h3>Centro de Salud de Vall d'Alba</h3>
+          <div class="stars">★★★★★ (4.7)</div>
+          <p>Atención sanitaria rural y comunitaria. Medicina preventiva y promoción de la salud.</p>
+          <div class="tags">
+            <span class="tag purple">Medicina Rural</span>
+            <span class="tag purple">Prevención</span>
+            <span class="tag purple">Comunitaria</span>
+          </div>
+          <button type="button" class="btn-card purple js-go" data-target="mapa-hospital">Ver Detalles</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="progreso">
+      <h2 class="section-title">Rotaciones Clínicas y Competencias</h2>
+      <p class="section-desc">Sigue tu progreso en las rotaciones hospitalarias y desarrolla competencias médicas esenciales.</p>
+      <div class="rotaciones-grid" id="progreso-rotaciones-grid">
+        <p style="color:#6b7280;font-size:0.88rem">Cargando rotaciones...</p>
+      </div>
+      <div class="dos-columnas">
+        <div class="card">
+          <h3>Competencias Desarrolladas</h3>
+          <div id="comp-bars-wrap">
+            <p style="color:#9ca3af;font-size:0.85rem">Cargando competencias...</p>
+          </div>
+          <div id="mis-evaluaciones" style="margin-top:0.9rem"></div>
+          <button type="button" class="btn-gradient js-go" data-target="progreso" style="margin-top:0.75rem;width:100%">Ver Evaluaciones Detalladas</button>
+        </div>
+        <div class="card">
+          <h3>Mis Rotaciones</h3>
+          <div id="cal-rotaciones">
+            <p style="color:#9ca3af;font-size:0.85rem">Cargando rotaciones...</p>
+          </div>
+          <button type="button" class="btn-outline js-go" data-target="novedades" style="margin-top:0.75rem;width:100%">Ver novedades</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="apoyo">
+      <h2 class="section-title">Apoyo en prácticas</h2>
+      <p class="section-desc">Todo lo que necesitas para estar preparado y saber a quién acudir durante tus rotaciones.</p>
+      <div class="apoyo-grid">
+        <div class="apoyo-card">
+          <h4><span class="emoji">👤</span> Tu tutor asignado</h4>
+          <div class="tutor-info" id="apoyo-tutor-info">
+            <p><span class="nombre">Cargando...</span></p>
+          </div>
+        </div>
+        <div class="apoyo-card">
+          <h4><span class="emoji">✓</span> Antes de ir al hospital</h4>
+          <ul class="apoyo-checklist">
+            <li>Bata y identificación visible</li>
+            <li>Lista de procedimientos a observar hoy</li>
+            <li>Confirmar horario y planta con tu tutor</li>
+            <li>Revisar protocolos del servicio</li>
+          </ul>
+        </div>
+        <div class="apoyo-card">
+          <h4><span class="emoji">📞</span> Contactos útiles</h4>
+          <div class="apoyo-contactos">
+            <p><strong>Coordinación prácticas UJI</strong><br><a href="mailto:practicas@uji.es">practicas@uji.es</a> · 964 72 80 00</p>
+            <p><strong>Secretaría Medicina</strong><br><a href="mailto:medicina@uji.es">medicina@uji.es</a></p>
+          </div>
+        </div>
+        <div class="apoyo-card">
+          <h4><span class="emoji">📋</span> Normativa y deberes</h4>
+          <div class="apoyo-normativa">
+            <strong>Recuerda:</strong>
+            <ul>
+              <li>Confidencialidad de datos y historias clínicas</li>
+              <li>Asistencia obligatoria según normativa del centro</li>
+              <li>Las faltas se justifican en Secretaría y al tutor</li>
+              <li>En caso de incidencia (lesión, exposición), avisar al tutor y a Coordinación</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PRE-ROTACIÓN PREPARATION MODULES ─────────────────────────────── -->
+    <section class="section" id="pre-rotacion">
+      <h2 class="section-title">Preparación Pre-Rotatorio</h2>
+      <p class="section-desc">Revisa la información del servicio clínico, repasa los diagnósticos frecuentes y completa las autoevaluaciones obligatorias de entrada (T0) y salida (T1).</p>
+      
+      <div class="prep-header">
+        <label style="font-weight:600;font-size:0.95rem">Selecciona una rotación activa o planificada:
+          <select id="prep-rotation-select" class="prep-select">
+            <option value="">Selecciona rotación...</option>
+          </select>
+        </label>
+        <span id="prep-access-badge" style="display:none;background:#dcfce7;color:#15803d;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.8rem;font-weight:600">✓ Acceso Registrado</span>
+      </div>
+
+      <div id="prep-main-panel" style="display:none;">
+        <h3 id="prep-service-header" style="font-size:1.3rem;margin-bottom:1rem;color:var(--gray-900)">Preparación de la especialidad</h3>
+        
+        <div class="prep-grid">
+          <!-- Guía del servicio -->
+          <article class="prep-section-card" id="prep-service-guide">
+            <h3>📖 Guía del Servicio</h3>
+            <div class="content" style="white-space:pre-wrap">Cargando guía...</div>
+          </article>
+
+          <!-- Objetivos -->
+          <article class="prep-section-card" id="prep-learning-objectives">
+            <h3>🎯 Objetivos de Aprendizaje</h3>
+            <ol class="content" style="padding-left:1.2rem;margin:0"></ol>
+          </article>
+
+          <!-- Expectativas del tutor -->
+          <article class="prep-section-card" id="prep-tutor-expectations">
+            <h3>👩‍⚕️ Expectativas del Tutor</h3>
+            <div class="content" style="white-space:pre-wrap">Cargando expectativas...</div>
+          </article>
+
+          <!-- Seguridad del paciente -->
+          <article class="prep-section-card" id="prep-patient-safety">
+            <h3>⚠️ Seguridad del Paciente</h3>
+            <div class="content" style="white-space:pre-wrap">Cargando seguridad...</div>
+          </article>
+        </div>
+
+        <!-- Diagnósticos Frecuentes -->
+        <div class="card" style="margin-top:1.5rem;padding:1.25rem">
+          <h3 style="margin:0 0 0.75rem;font-size:1.05rem;color:var(--blue)">🏥 Diagnósticos más Frecuentes</h3>
+          <div style="overflow-x:auto">
+            <table class="diagnoses-table" id="prep-diagnoses-table">
+              <thead>
+                <tr>
+                  <th>Diagnóstico</th>
+                  <th>Definición</th>
+                  <th>Síntomas Clave</th>
+                  <th>Signos Físicos</th>
+                  <th>Pruebas Clave</th>
+                  <th>Tratamiento</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interactive Checklist -->
+        <div class="prep-grid" style="margin-top:1.5rem">
+          <article class="prep-section-card" style="grid-column: span 1">
+            <h3>✓ Lista de Competencias (Checklist)</h3>
+            <p style="margin-top:0;margin-bottom:0.75rem;font-size:0.82rem;color:var(--gray-600)">Haz clic en las competencias que hayas observado o realizado durante tu rotación. Tu avance se guarda de forma automática.</p>
+            <div id="prep-checklist-wrap"></div>
+          </article>
+
+          <!-- EPA Self Assessment Forms -->
+          <article class="prep-section-card self-assessment-card" style="grid-column: span 1">
+            <h3>📋 Autoevaluación de Confianza (1-5 Escala de Chen)</h3>
+            
+            <div class="tabs" style="width:100%;margin-bottom:1rem">
+              <button type="button" id="tab-t0" class="active" style="flex:1">Entrada (T0)</button>
+              <button type="button" id="tab-t1" style="flex:1">Salida (T1 + Entonces-T0)</button>
+            </div>
+
+            <!-- Form T0 -->
+            <div id="panel-t0">
+              <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:1rem">Autoevalúa tu nivel de confianza antes de comenzar la rotación. 1 = Sin exposición, 5 = Autónomo con supervisión indirecta.</p>
+              <div class="epa-list" id="epa-list-t0"></div>
+              
+              <div style="margin-top:1rem">
+                <label style="font-weight:600;font-size:0.82rem">¿Cuáles son tus 1-2 objetivos de aprendizaje personales para este rotatorio? (Obligatorio)</label>
+                <textarea id="t0-goals" style="margin-top:0.35rem" placeholder="Ej: Aprender a auscultar soplos e interpretar gasometrías arteriales..." rows="3"></textarea>
+              </div>
+
+              <button type="button" class="btn-gradient" id="btn-submit-t0" style="margin-top:1.25rem;width:100%">Enviar Autoevaluación T0</button>
+            </div>
+
+            <!-- Form T1 + retro T0 -->
+            <div id="panel-t1" style="display:none">
+              <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:1rem">Al finalizar, autoevalúa tu nivel de competencia (Salida T1) y de forma retrospectiva (Mirando atrás, cómo estabas al inicio).</p>
+              
+              <div class="epa-list" id="epa-list-t1"></div>
+              
+              <button type="button" class="btn-gradient" id="btn-submit-t1" style="margin-top:1.25rem;width:100%">Enviar Autoevaluaciones (T1 + Retro-T0)</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AI TRAINING ZONE (Virtual Patient & Socratic guides) ─────────── -->
+    <section class="section" id="training-zone">
+      <h2 class="section-title">Entrenamiento IA (Training Zone)</h2>
+      <p class="section-desc">Entrena tus habilidades clínicas con pacientes virtuales y aprende razonamiento médico de forma interactiva.</p>
+      
+      <div class="dos-columnas">
+        <!-- Anamnesis Sim -->
+        <div class="card" style="display:flex;flex-direction:column;gap:1rem">
+          <h3 style="margin:0;font-size:1.15rem;color:var(--gray-900)">🤖 Simulador de Anamnesis (Paciente Virtual)</h3>
+          <p style="margin:0;font-size:0.86rem;color:var(--gray-600)">Chatea con un paciente virtual simulado por IA. Intenta averiguar su diagnóstico haciendo las preguntas correctas.</p>
+          
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <select id="ai-case-select" class="prep-select" style="flex:1;min-width:auto">
+              <option value="">Cargando casos disponibles...</option>
+            </select>
+            <button type="button" class="btn-gradient" id="btn-start-patient" style="white-space:nowrap">Iniciar Simulación</button>
+          </div>
+
+          <div class="ai-chat-widget" id="ai-patient-chat-container" style="display:none">
+            <div class="ai-chat-messages" id="ai-patient-messages"></div>
+            <div style="padding:0.75rem;border-top:1px solid var(--gray-200);display:flex;gap:0.5rem">
+              <input type="text" id="ai-patient-input" placeholder="Pregunta sobre síntomas, antecedentes, hábitos..." style="flex:1;padding:0.55rem 0.75rem;border:1px solid var(--gray-200);border-radius:10px;font-size:0.88rem;outline:none" />
+              <button type="button" id="btn-send-patient-msg" class="btn-gradient" style="padding:0 1.2rem">Enviar</button>
+            </div>
+            <div style="padding:0.5rem;text-align:center;border-top:1px solid var(--gray-100)">
+              <button type="button" id="btn-evaluate-patient" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.8rem;font-weight:600;cursor:pointer">Finalizar e Historial Clínico</button>
+            </div>
+          </div>
+
+          <div id="ai-patient-feedback-panel" style="display:none;background:#f8fafc;padding:1rem;border-radius:10px;border:1px solid #e2e8f0;font-size:0.86rem">
+            <h4 style="margin:0 0 0.5rem;color:var(--blue);font-size:0.95rem">Evaluación de la Consulta</h4>
+            <div id="ai-patient-feedback-content" style="white-space:pre-wrap"></div>
+          </div>
+        </div>
+
+        <!-- Socratic Interpreters -->
+        <div class="card" style="display:flex;flex-direction:column;gap:1rem">
+          <h3 style="margin:0;font-size:1.15rem;color:var(--gray-900)">🧠 Intérpretes Socráticos de Pruebas</h3>
+          <p style="margin:0;font-size:0.86rem;color:var(--gray-600)">Aprende a interpretar ECGs y Gasometrías de forma interactiva. El tutor socrático te guiará paso a paso.</p>
+          
+          <div class="tabs" style="width:100%;margin-bottom:0.5rem">
+            <button type="button" id="tab-socratic-abg" class="active" style="flex:1">Gasometría (ABG)</button>
+            <button type="button" id="tab-socratic-ecg" style="flex:1">Electrocardiograma (ECG)</button>
+          </div>
+
+          <!-- ABG panel -->
+          <div id="socratic-abg-panel" class="socratic-container">
+            <h4 style="margin:0 0 0.5rem;font-size:0.92rem;color:var(--gray-900)">Caso: Varón con Disnea Aguda (pH: 7.28, pCO2: 55, HCO3: 26)</h4>
+            <div id="socratic-abg-history" style="margin-bottom:0.75rem;font-size:0.85rem;color:var(--gray-700)">
+              <strong>Paso 1:</strong> ¿Es el pH acidótico o alcalótico?
+            </div>
+            <div style="display:flex;gap:0.5rem">
+              <input type="text" id="socratic-abg-input" placeholder="Tu respuesta..." style="flex:1;padding:0.5rem;border:1px solid #cbd5e1;border-radius:8px;font-size:0.85rem;outline:none" />
+              <button type="button" id="btn-submit-socratic-abg" class="btn-gradient" style="font-size:0.82rem;padding:0 1rem">Evaluar</button>
+            </div>
+            <div id="socratic-abg-feedback" style="margin-top:0.75rem;font-size:0.82rem;font-weight:600"></div>
+          </div>
+
+          <!-- ECG panel -->
+          <div id="socratic-ecg-panel" class="socratic-container" style="display:none">
+            <h4 style="margin:0 0 0.5rem;font-size:0.92rem;color:var(--gray-900)">Caso: Taquicardia regular en mujer de 35 años (150 lpm, QRS estrecho)</h4>
+            <div id="socratic-ecg-history" style="margin-bottom:0.75rem;font-size:0.85rem;color:var(--gray-700)">
+              <strong>Paso 1:</strong> ¿Cuál es la frecuencia cardíaca aproximada en lpm o tipo de ritmo?
+            </div>
+            <div style="display:flex;gap:0.5rem">
+              <input type="text" id="socratic-ecg-input" placeholder="Tu respuesta..." style="flex:1;padding:0.5rem;border:1px solid #cbd5e1;border-radius:8px;font-size:0.85rem;outline:none" />
+              <button type="button" id="btn-submit-socratic-ecg" class="btn-gradient" style="font-size:0.82rem;padding:0 1rem">Evaluar</button>
+            </div>
+            <div id="socratic-ecg-feedback" style="margin-top:0.75rem;font-size:0.82rem;font-weight:600"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BIBLIOTECA DOCENTE ──────────────────────────────────────────── -->
+    <section class="section" id="biblioteca-docente">
+      <h2 class="section-title">Biblioteca Docente UJI</h2>
+      <p class="section-desc">Accede a recursos de apoyo, guías clínicas y plantillas de aprendizaje compartidas por los tutores clínicos.</p>
+      
+      <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap">
+        <input type="text" id="lib-search-input" placeholder="Buscar por título, especialidad o etiqueta..." style="padding:0.55rem 0.9rem;border:1px solid var(--gray-200);border-radius:10px;font-size:0.88rem;outline:none;flex:1;min-width:260px" />
+        <select id="lib-type-filter" class="prep-select" style="min-width:180px">
+          <option value="">Todos los tipos</option>
+          <option value="documento">Documentos/PDFs</option>
+          <option value="video">Vídeos</option>
+          <option value="guia">Guías clínicas</option>
+          <option value="otro">Otros</option>
+        </select>
+      </div>
+
+      <div class="recursos-grid" id="lib-resources-grid">
+        <p style="color:#6b7280;font-size:0.88rem">Cargando biblioteca...</p>
+      </div>
+    </section>
+
+    <section class="section" id="recursos">
+      <h2 class="section-title">Recursos Externos</h2>
+      <div class="recursos-grid">
+        <article class="card recurso-card">
+          <div class="icon-wrap blue">📖</div>
+          <h3>Manual MSD</h3>
+          <p>Referencia médica completa: diagnóstico, tratamiento y guías clínicas en español.</p>
+          <a href="https://www.msdmanuals.com/es-es/professional" target="_blank" rel="noopener" class="blue">Explorar →</a>
+        </article>
+        <article class="card recurso-card">
+          <div class="icon-wrap green">👁</div>
+          <h3>Anatomía 3D</h3>
+          <p>Modelos anatómicos interactivos para explorar el cuerpo humano en 3D.</p>
+          <a href="https://www.zygotebody.com" target="_blank" rel="noopener" class="green">Practicar →</a>
+        </article>
+        <article class="card recurso-card">
+          <div class="icon-wrap purple">📋</div>
+          <h3>Casos Clínicos NEJM</h3>
+          <p>Casos interactivos del New England Journal of Medicine para desarrollar diagnóstico.</p>
+          <a href="https://www.nejm.org/multimedia/interactive-medical-cases" target="_blank" rel="noopener" class="purple">Estudiar →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="mapa-hospital">
+      <h2 class="section-title">Asistencia QR</h2>
+      <p class="section-desc">Escanea el código QR de tu rotación para registrar la asistencia. El tutor lo confirmará desde su panel.</p>
+
+      <h3 style="font-size:1rem;margin:0 0 0.75rem">Mis rotaciones</h3>
+      <div id="asistencia-rotaciones" style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem">
+        <p style="color:#6b7280;font-size:0.88rem">Cargando rotaciones...</p>
+      </div>
+
+      <h3 style="font-size:1rem;margin:0 0 0.75rem">Historial de asistencia</h3>
+      <div id="asistencia-historial" style="display:flex;flex-direction:column;gap:0.5rem">
+        <p style="color:#6b7280;font-size:0.88rem">Cargando historial...</p>
+      </div>
+    </section>
+
+    <section class="section" id="novedades">
+      <h2 class="section-title">Novedades y Notificaciones</h2>
+      <p class="section-desc">Avisos importantes de prácticas, recursos y cambios de agenda para tu seguimiento diario.</p>
+      <div class="noti-wrap">
+        <div class="noti-head">
+          <strong>Centro de notificaciones</strong>
+          <span class="unread" id="noti-badge" style="display:none"></span>
+        </div>
+        <div class="noti-list" id="noti-list">
+          <article class="noti-item"><span class="dot blue"></span><div><h4>Cargando...</h4></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="comunidad">
+      <h2 class="section-title">Comunidad de Estudiantes</h2>
+      <div class="comunidad-grid">
+        <div>
+          <h3 style="margin-bottom:1rem">Discusiones Recientes</h3>
+          <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:0.85rem;margin-bottom:1rem">
+            <textarea id="student-post-text" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:0.6rem 0.75rem;font-size:0.88rem;resize:vertical;min-height:60px;font-family:inherit" placeholder="Comparte algo con la comunidad de estudiantes..."></textarea>
+            <button type="button" id="publish-student-post" style="margin-top:0.5rem;border:none;border-radius:8px;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;padding:0.55rem 1.1rem;font-size:0.88rem;font-weight:600;cursor:pointer">Publicar</button>
+          </div>
+          <div id="student-posts-list"></div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+            <h3 style="margin:0">Grupos de Estudio</h3>
+            <button type="button" id="btn-create-group" style="border:none;border-radius:8px;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;font-size:0.82rem;font-weight:600;padding:0.4rem 0.85rem;cursor:pointer">+ Crear grupo</button>
+          </div>
+          <div id="study-groups-list"><em style="color:#9ca3af;font-size:0.88rem">Cargando grupos...</em></div>
+
+          <!-- Modal crear grupo -->
+          <div id="create-group-overlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:300;align-items:center;justify-content:center">
+            <div style="background:#fff;border-radius:16px;padding:1.75rem;max-width:380px;width:92%;box-shadow:0 20px 60px rgba(15,23,42,0.3)">
+              <h3 style="margin:0 0 1rem;font-size:1rem">Crear grupo de estudio</h3>
+              <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem">
+                <input id="group-name-input" type="text" placeholder="Nombre del grupo" style="padding:0.5rem 0.75rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.88rem;outline:none" />
+                <textarea id="group-desc-input" placeholder="Descripción (opcional)" rows="2" style="padding:0.5rem 0.75rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.88rem;resize:none;font-family:inherit;outline:none"></textarea>
+              </div>
+              <div style="display:flex;gap:0.65rem;justify-content:flex-end">
+                <button id="create-group-cancel" style="padding:0.5rem 1rem;border:1px solid #e5e7eb;border-radius:10px;background:#fff;font-size:0.88rem;cursor:pointer">Cancelar</button>
+                <button id="create-group-ok" style="padding:0.5rem 1.2rem;border:none;border-radius:10px;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;font-size:0.88rem;font-weight:600;cursor:pointer">Crear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MENSAJES PRIVADOS ─────────────────────────────────────── -->
+    <section class="section" id="mensajes">
+      <h2>Mensajes</h2>
+      <div style="display:grid;grid-template-columns:260px 1fr;gap:1rem;min-height:460px">
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--gray-200);overflow:hidden;display:flex;flex-direction:column">
+          <div style="padding:0.6rem 0.75rem;border-bottom:1px solid var(--gray-200)">
+            <input id="msg-search" type="text" placeholder="Buscar tutor por nombre o email..." autocomplete="off"
+              style="width:100%;padding:0.45rem 0.7rem;border:1px solid var(--gray-200);border-radius:8px;font-size:0.82rem;outline:none;box-sizing:border-box" />
+            <div id="msg-search-results" style="display:none;margin-top:0.4rem;background:#fff;border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08)"></div>
+          </div>
+          <div style="padding:0.5rem 1rem 0.3rem;font-size:0.75rem;font-weight:600;color:var(--gray-600);text-transform:uppercase;letter-spacing:.05em">Conversaciones</div>
+          <div id="msg-contacts" style="flex:1;overflow-y:auto"></div>
+        </div>
+        <div style="background:#fff;border-radius:12px;border:1px solid var(--gray-200);display:flex;flex-direction:column">
+          <div id="msg-chat-header" style="padding:0.85rem 1.25rem;border-bottom:1px solid var(--gray-200);font-weight:600;color:var(--gray-900)">Selecciona un tutor para chatear</div>
+          <div id="msg-chat-body" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.5rem;min-height:340px"></div>
+          <div style="padding:0.75rem 1rem;border-top:1px solid var(--gray-200);display:flex;gap:0.5rem">
+            <input id="msg-input" type="text" placeholder="Escribe un mensaje..." style="flex:1;padding:0.55rem 0.9rem;border:1px solid var(--gray-200);border-radius:8px;font-size:0.9rem;outline:none" disabled />
+            <button id="msg-send-btn" type="button" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:0.55rem 1.1rem;font-size:0.9rem;cursor:pointer;font-weight:600" disabled>Enviar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-mini">
+      <p class="brand"><strong>Mediloop</strong> · Prácticas clínicas UJI</p>
+      <div class="acciones">
+        <a href="index.html">Ver landing</a>
+        <a href="index.html" id="cerrar-sesion-footer">Cerrar sesión</a>
+      </div>
+    </footer>
+    <div id="sys-indicator" class="sys-indicator warn" aria-live="polite"><span class="dot"></span><span id="sys-indicator-text">Conectando...</span></div>
+    <div id="app-status" class="app-status" aria-live="polite"></div>
+    <button type="button" id="scroll-top-btn" class="scroll-top-btn" aria-label="Volver arriba">↑</button>
+    <button type="button" class="help-fab" aria-label="Ayuda">?</button>
+    <script>
+      (function () {
+        var API_BASE = window.location.hostname === "localhost" ? "http://localhost:4000/api" : "/api";
+        var session;
+        try {
+          session = JSON.parse(localStorage.getItem("mediloop.session") || "null");
+        } catch (_err) {
+          session = null;
+        }
+
+        if (!session || !session.token || !session.user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        function authHeaders() {
+          return {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + session.token
+          };
+        }
+
+        function logoutAndGo() {
+          localStorage.removeItem("mediloop.session");
+          window.location.href = "index.html";
+        }
+        var statusEl = document.getElementById("app-status");
+        var statusTimer;
+        function showStatus(type, text) {
+          if (!statusEl) return;
+          statusEl.className = "app-status " + type;
+          statusEl.textContent = text;
+          statusEl.classList.add("show");
+          clearTimeout(statusTimer);
+          statusTimer = setTimeout(function () {
+            statusEl.classList.remove("show");
+          }, 2200);
+        }
+        function goToSection(id) {
+          var target = document.getElementById(id);
+          if (!target) return;
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        function setupScrollSpy() {
+          var links = document.querySelectorAll(".side-nav a[data-spy]");
+          var sectionIds = Array.prototype.map.call(links, function (link) {
+            return link.getAttribute("data-spy");
+          });
+          var lastSectionKey = "mediloop.ui.alumnos.lastSection";
+          function markActive(id) {
+            links.forEach(function (link) {
+              link.classList.toggle("active", link.getAttribute("data-spy") === id);
+            });
+          }
+          function onScroll() {
+            var activeId = sectionIds[0] || "";
+            sectionIds.forEach(function (id) {
+              var el = document.getElementById(id);
+              if (!el) return;
+              var rect = el.getBoundingClientRect();
+              if (rect.top <= 180) activeId = id;
+            });
+            if (activeId) {
+              markActive(activeId);
+              localStorage.setItem(lastSectionKey, activeId);
+            }
+          }
+          var remembered = localStorage.getItem(lastSectionKey);
+          if (remembered && document.getElementById(remembered)) {
+            setTimeout(function () {
+              goToSection(remembered);
+            }, 120);
+          }
+          onScroll();
+          window.addEventListener("scroll", onScroll, { passive: true });
+        }
+        function setupCompactNav() {
+          var nav = document.querySelector(".side-nav");
+          var toggle = document.getElementById("side-nav-toggle");
+          if (!nav || !toggle) return;
+          var storageKey = "mediloop.ui.alumnos.sideNavCompact";
+          var isCompact = localStorage.getItem(storageKey) === "1";
+          nav.classList.toggle("compact", isCompact);
+          toggle.textContent = "☰";
+          var toggleTip = isCompact ? "Expandir barra lateral" : "Compactar barra lateral";
+          toggle.setAttribute("data-tip", toggleTip);
+          toggle.setAttribute("aria-label", toggleTip);
+          toggle.addEventListener("click", function () {
+            isCompact = !isCompact;
+            nav.classList.toggle("compact", isCompact);
+            toggle.textContent = "☰";
+            var nextTip = isCompact ? "Expandir barra lateral" : "Compactar barra lateral";
+            toggle.setAttribute("data-tip", nextTip);
+            toggle.setAttribute("aria-label", nextTip);
+            localStorage.setItem(storageKey, isCompact ? "1" : "0");
+          });
+        }
+        function setupUndoControls() {
+          var backBtn = document.getElementById("go-back-btn");
+          var resetSectionBtn = document.getElementById("reset-section-btn");
+          var undoBtn = document.getElementById("undo-prefs-btn");
+          if (backBtn) {
+            backBtn.addEventListener("click", function () {
+              if (window.history.length > 1) window.history.back();
+              else window.location.href = "index.html";
+            });
+          }
+          if (resetSectionBtn) {
+            resetSectionBtn.addEventListener("click", function () {
+              localStorage.removeItem("mediloop.ui.alumnos.lastSection");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              showStatus("success", "Se olvidó la última sección.");
+            });
+          }
+          if (undoBtn) {
+            undoBtn.addEventListener("click", function () {
+              localStorage.setItem("mediloop.ui.alumnos.sideNavCompact", "0");
+              localStorage.removeItem("mediloop.ui.alumnos.lastSection");
+              var nav = document.querySelector(".side-nav");
+              var toggle = document.getElementById("side-nav-toggle");
+              if (nav) nav.classList.remove("compact");
+              if (toggle) {
+                toggle.textContent = "☰";
+                toggle.setAttribute("data-tip", "Compactar barra lateral");
+                toggle.setAttribute("aria-label", "Compactar barra lateral");
+              }
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              showStatus("success", "Preferencias restauradas.");
+            });
+          }
+        }
+        function setupScrollTop() {
+          var btn = document.getElementById("scroll-top-btn");
+          if (!btn) return;
+          function onScroll() {
+            if (window.scrollY > 260) btn.classList.add("show");
+            else btn.classList.remove("show");
+          }
+          btn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+          onScroll();
+          window.addEventListener("scroll", onScroll, { passive: true });
+        }
+        function updateSystemIndicator() {
+          var indicator = document.getElementById("sys-indicator");
+          var text = document.getElementById("sys-indicator-text");
+          if (!indicator || !text) return;
+          if (!navigator.onLine) {
+            indicator.className = "sys-indicator err";
+            text.textContent = "Sin internet";
+            return;
+          }
+          fetch(API_BASE + "/health")
+            .then(function (res) {
+              if (!res.ok) throw new Error();
+              indicator.className = "sys-indicator ok";
+              text.textContent = "API conectada";
+            })
+            .catch(function () {
+              indicator.className = "sys-indicator warn";
+              text.textContent = "API no disponible";
+            });
+        }
+
+        var userNameEl = document.querySelector(".user-name");
+        if (userNameEl) userNameEl.textContent = session.user.name || "Alumno";
+
+        var logoutEls = document.querySelectorAll(".salir, #cerrar-sesion-footer");
+        logoutEls.forEach(function (el) {
+          el.addEventListener("click", function (event) {
+            event.preventDefault();
+            logoutAndGo();
+          });
+        });
+
+        function renderCalendario(rots) {
+          var el = document.getElementById("cal-rotaciones");
+          if (!el) return;
+          if (!rots || !rots.length) {
+            el.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem">No tienes rotaciones asignadas.</p>';
+            return;
+          }
+          var today = new Date().toISOString().slice(0, 10);
+          var colors = [
+            { line: "var(--blue)",   time_bg: "#dbeafe", time_c: "var(--blue)"   },
+            { line: "var(--green)",  time_bg: "#d1fae5", time_c: "var(--green)"  },
+            { line: "var(--purple)", time_bg: "#ede9fe", time_c: "var(--purple)" },
+            { line: "#f59e0b",       time_bg: "#ffedd5", time_c: "#d97706"       }
+          ];
+          el.innerHTML = rots.map(function(rot, i) {
+            var col = colors[i % colors.length];
+            var isActive  = rot.start_date <= today && rot.end_date >= today;
+            var isPast    = rot.end_date < today;
+            var timeLabel = isPast ? "Completada" : isActive ? "En curso" : rot.start_date;
+            return '<div class="calendario-item">' +
+              '<span class="line" style="background:' + col.line + '"></span>' +
+              '<div><strong>' + rot.service + '</strong><br><span style="font-size:0.85rem;color:var(--gray-600)">' + rot.hospital + '</span></div>' +
+              '<span class="time" style="background:' + col.time_bg + ';color:' + col.time_c + '">' + timeLabel + '</span>' +
+            '</div>';
+          }).join("");
+        }
+
+        function renderCompetencias(evals) {
+          var el = document.getElementById("comp-bars-wrap");
+          if (!el) return;
+          if (!evals || !evals.length) {
+            el.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem">Aún no tienes evaluaciones. Las competencias se calcularán cuando tu tutor te evalúe.</p>';
+            return;
+          }
+          var n = evals.length;
+          var sums = evals.reduce(function(s, e) {
+            return { t: s.t + (e.theory || 0), p: s.p + (e.practical || 0), c: s.c + (e.communication || 0) };
+          }, { t: 0, p: 0, c: 0 });
+          var avgT = Math.round(sums.t / n * 10) / 10;
+          var avgP = Math.round(sums.p / n * 10) / 10;
+          var avgC = Math.round(sums.c / n * 10) / 10;
+
+          function nivel(avg) {
+            if (avg >= 4.5) return "Avanzado";
+            if (avg >= 3)   return "Intermedio";
+            return "Iniciante";
+          }
+          function bar(val, color, label, niv, nivColor) {
+            return '<div class="competencia-item">' +
+              '<div class="row" style="justify-content:space-between">' +
+                '<span style="display:flex;align-items:center;gap:0.5rem"><span class="dot" style="background:' + color + '"></span><span>' + label + '</span></span>' +
+                '<span class="nivel" style="color:' + nivColor + ';font-weight:600">' + niv + ' · ' + val + '/5</span>' +
+              '</div>' +
+              '<div class="bar" style="margin-top:0.25rem"><span style="width:' + Math.round(val / 5 * 100) + '%;background:' + color + '"></span></div>' +
+            '</div>';
+          }
+          el.innerHTML =
+            bar(avgT, "var(--green)",  "Conocimiento Teórico",  nivel(avgT), "var(--green)") +
+            bar(avgP, "var(--blue)",   "Habilidades Prácticas", nivel(avgP), "var(--blue)") +
+            bar(avgC, "#f59e0b",       "Comunicación Clínica",  nivel(avgC), "#d97706");
+        }
+
+        function renderRotacionesProgreso(rots) {
+          var grid = document.getElementById("progreso-rotaciones-grid");
+          if (!grid) return;
+          if (!rots || !rots.length) {
+            grid.innerHTML = '<p style="color:#6b7280;font-size:0.88rem">No tienes rotaciones asignadas aún.</p>';
+            return;
+          }
+          var today = new Date().toISOString().slice(0, 10);
+          grid.innerHTML = rots.map(function (rot) {
+            var status, borderClass, iconClass, iconTxt, badgeClass;
+            var isCompleted = rot.end_date < today;
+            if (isCompleted) {
+              status = "Completada"; borderClass = "borde-green"; iconClass = "green"; iconTxt = "✓"; badgeClass = "completada";
+            } else if (rot.start_date <= today) {
+              status = "En curso"; borderClass = "borde-blue"; iconClass = "blue"; iconTxt = "🛏"; badgeClass = "en-curso";
+            } else {
+              status = "Próxima"; borderClass = "borde-gray"; iconClass = "gray"; iconTxt = "★"; badgeClass = "proxima";
+            }
+            var msgBtn = rot.tutor_id
+              ? '<button type="button" onclick="window.openMsgChat(\'' + rot.tutor_id + '\',\'' + (rot.tutor_name || 'Tutor').replace(/'/g,"\\'") + '\')" style="margin-top:0.6rem;border:none;border-radius:7px;background:#eff6ff;color:#2563eb;padding:0.35rem 0.75rem;font-size:0.8rem;cursor:pointer;font-weight:600;width:100%">💬 Mensaje al tutor</button>'
+              : '';
+            var mcpiBtn = isCompleted
+              ? '<button type="button" class="btn-mcpi-feedback" data-rot-id="' + rot.id + '" data-rot-service="' + rot.service.replace(/'/g,"\\'") + '" style="margin-top:0.5rem;border:none;border-radius:7px;background:#f0fdf4;color:#16a34a;padding:0.35rem 0.75rem;font-size:0.8rem;cursor:pointer;font-weight:600;width:100%">📝 Evaluar Rotación (MCPI)</button>'
+              : '';
+            return '<article class="card rotacion-card ' + borderClass + '">' +
+              '<span class="badge ' + badgeClass + '">' + status + '</span>' +
+              '<div class="icon-wrap ' + iconClass + '">' + iconTxt + '</div>' +
+              '<h3>' + rot.service + '</h3>' +
+              '<p class="sub">' + rot.hospital + '</p>' +
+              '<p class="meta">' + rot.start_date + ' → ' + rot.end_date + '</p>' +
+              msgBtn +
+              mcpiBtn +
+              '</article>';
+          }).join("");
+
+          // Attach click listeners for MCPI buttons
+          grid.querySelectorAll(".btn-mcpi-feedback").forEach(function(btn) {
+            btn.addEventListener("click", function() {
+              openMcpiModal(btn.getAttribute("data-rot-id"), btn.getAttribute("data-rot-service"));
+            });
+          });
+        }
+
+        function renderAsistenciaQR(rots) {
+          var wrap = document.getElementById("asistencia-rotaciones");
+          if (!wrap) return;
+          if (!rots || !rots.length) {
+            wrap.innerHTML = '<p style="color:#6b7280;font-size:0.88rem">No tienes rotaciones asignadas. Cuando el tutor te añada a una, aparecerá aquí.</p>';
+            return;
+          }
+          wrap.innerHTML = "";
+          rots.forEach(function (rot) {
+            var today = new Date().toISOString().slice(0, 10);
+            var isActive = rot.start_date <= today && rot.end_date >= today;
+            var div = document.createElement("div");
+            div.style.cssText = "background:#fff;border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);flex-wrap:wrap";
+            div.innerHTML =
+              '<div>' +
+                '<div style="font-weight:600;font-size:0.95rem">' + rot.service + '</div>' +
+                '<div style="font-size:0.82rem;color:#6b7280">' + rot.hospital + ' · ' + rot.start_date + ' → ' + rot.end_date + '</div>' +
+                '<div id="att-status-' + rot.id + '" style="font-size:0.78rem;margin-top:0.25rem;color:#6b7280">Cargando estado...</div>' +
+              '</div>' +
+              '<button type="button" class="btn-registrar-att" data-rot-id="' + rot.id + '" data-service="' + rot.service + '" data-hospital="' + rot.hospital + '" ' +
+                'style="background:' + (isActive ? '#2563eb' : '#9ca3af') + ';color:#fff;border:none;border-radius:8px;padding:0.45rem 1rem;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap"' +
+                (isActive ? '' : ' disabled title="Rotación no activa hoy"') + '>' +
+                (isActive ? 'Registrar asistencia' : 'No activa hoy') +
+              '</button>';
+            wrap.appendChild(div);
+          });
+
+          // Cargar estado de asistencia por rotación
+          fetch(API_BASE + "/attendance/my", { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              rots.forEach(function(rot) {
+                var el = document.getElementById("att-status-" + rot.id);
+                if (!el) return;
+                var pending = (data.pending || []).find(function(a) { return a.area && a.area.includes(rot.service); });
+                var confirmed = (data.confirmed || []).find(function(a) { return a.area && a.area.includes(rot.service); });
+                if (pending) el.innerHTML = '<span style="color:#b45309">⏳ Pendiente de confirmación</span>';
+                else if (confirmed) el.innerHTML = '<span style="color:#16a34a">✅ Confirmada · ' + confirmed.time + '</span>';
+                else el.innerHTML = '<span style="color:#9ca3af">Sin registro hoy</span>';
+              });
+            })
+            .catch(function() {});
+
+          // Botones de registrar asistencia
+          wrap.querySelectorAll(".btn-registrar-att").forEach(function(btn) {
+            btn.addEventListener("click", function() {
+              openAttModal(btn.getAttribute("data-rot-id"), btn.getAttribute("data-service"), btn.getAttribute("data-hospital"));
+            });
+          });
+        }
+
+        function renderAsistenciaHistorial(data) {
+          var wrap = document.getElementById("asistencia-historial");
+          if (!wrap) return;
+          function attRow(area, bg, color, label) {
+            return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 1rem;background:#fff;border-radius:8px;font-size:0.85rem;box-shadow:0 1px 4px rgba(0,0,0,0.06)">' +
+              '<span>' + area + '</span>' +
+              '<span style="background:' + bg + ';color:' + color + ';padding:0.2rem 0.6rem;border-radius:999px;font-size:0.78rem">' + label + '</span>' +
+            '</div>';
+          }
+          var rows = [];
+          (data.pending || []).forEach(function(a) {
+            rows.push(attRow(a.area, "#fef9c3", "#854d0e", "Pendiente confirmación"));
+          });
+          (data.confirmed || []).forEach(function(a) {
+            rows.push(attRow(a.area, "#dcfce7", "#166534", "Confirmada · " + a.time));
+          });
+          wrap.innerHTML = rows.length ? rows.join("") : '<p style="color:#6b7280;font-size:0.88rem">Aún no tienes registros de asistencia.</p>';
+        }
+
+        Promise.all([
+          fetch(API_BASE + "/auth/me", { headers: authHeaders() }),
+          fetch(API_BASE + "/dashboard/student", { headers: authHeaders() }),
+          fetch(API_BASE + "/rotations", { headers: authHeaders() })
+        ])
+          .then(function (responses) {
+            responses.forEach(function (r) {
+              if (!r.ok) throw new Error("Sesión inválida o backend no disponible");
+            });
+            return Promise.all(responses.map(function (r) { return r.json(); }));
+          })
+          .then(function (data) {
+            var me = data[0];
+            var dashboard = data[1];
+            var rots = data[2];
+
+            if (userNameEl) userNameEl.textContent = me.name || session.user.name || "Alumno";
+
+            var summaryTitle = document.querySelector(".resumen-item .titulo");
+            var summaryDetail = document.querySelector(".resumen-item .detalle");
+            if (summaryTitle && dashboard.nextRotation) {
+              summaryTitle.textContent = "Rotación en curso: " + dashboard.nextRotation.service;
+            }
+            if (summaryDetail && dashboard.nextRotation) {
+              summaryDetail.textContent = dashboard.nextRotation.hospital + " · " + (dashboard.nextRotation.start_date || "") + " a " + (dashboard.nextRotation.end_date || "");
+            }
+
+            renderRotacionesProgreso(rots);
+            renderAsistenciaQR(rots);
+            renderCalendario(rots);
+
+            var prepSelect = document.getElementById("prep-rotation-select");
+            if (prepSelect) {
+              prepSelect.innerHTML = '<option value="">Selecciona rotación...</option>' + rots.map(function(r) {
+                return '<option value="' + r.id + '" data-service-id="' + r.serviceId + '">' + r.service + ' (' + r.hospital + ')</option>';
+              }).join("");
+            }
+
+            // Tutor asignado en sección apoyo
+            var apoyoInfo = document.getElementById("apoyo-tutor-info");
+            if (apoyoInfo) {
+              var today = new Date().toISOString().slice(0, 10);
+              var activeRot = rots.find(function(r) { return r.start_date <= today && r.end_date >= today; }) || rots[0];
+              if (activeRot && activeRot.tutor_name) {
+                apoyoInfo.innerHTML = '<p><span class="nombre">' + activeRot.tutor_name + '</span><br>' + activeRot.service + ' · ' + activeRot.hospital + '</p>' +
+                  '<p><a href="mailto:' + (activeRot.tutor_email || '') + '">' + (activeRot.tutor_email || 'Sin email') + '</a></p>';
+              } else {
+                apoyoInfo.innerHTML = '<p><span class="nombre">Sin tutor asignado</span><br>Contacta con coordinación</p>';
+              }
+            }
+          })
+          .catch(function () {
+            showStatus("error", "No se pudo cargar tu área. Inicia sesión de nuevo.");
+            logoutAndGo();
+          });
+
+        document.querySelectorAll(".js-demo-action, .js-demo-link").forEach(function (el) {
+          el.addEventListener("click", function (event) {
+            event.preventDefault();
+            showStatus("info", el.getAttribute("data-message") || "Funcionalidad disponible en la siguiente fase.");
+            var href = el.getAttribute("href") || "";
+            if (href.startsWith("#")) goToSection(href.slice(1));
+          });
+        });
+        document.querySelectorAll(".js-go").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var targetId = btn.getAttribute("data-target");
+            if (targetId) goToSection(targetId);
+            var msg = btn.getAttribute("data-message");
+            if (msg) showStatus("info", msg);
+          });
+        });
+
+        // ── Grupos de estudio dinámicos ──────────────────────────────────
+        var groupColors = ["", "verde", "purple"];
+        var joinColors  = ["blue", "green", "purple"];
+
+        function loadStudyGroups() {
+          var list = document.getElementById("study-groups-list");
+          if (!list) return;
+          fetch(API_BASE + "/study-groups", { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(groups) {
+              if (!groups.length) {
+                list.innerHTML = '<em style="color:#9ca3af;font-size:0.88rem">No hay grupos aún. ¡Crea el primero!</em>';
+                return;
+              }
+              list.innerHTML = groups.map(function(g, i) {
+                var colorClass = groupColors[i % groupColors.length];
+                var joinColor  = joinColors[i % joinColors.length];
+                var btnLabel   = g.isMember ? "Salir" : "Unirse";
+                var btnStyle   = g.isMember ? "background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;padding:0.35rem 0.75rem;cursor:pointer" : "background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;padding:0.35rem 0.75rem;cursor:pointer";
+                return '<article class="grupo-card ' + colorClass + '" style="margin-bottom:0.75rem">' +
+                  '<div style="flex:1"><h4 style="margin:0 0 0.25rem">' + g.name.replace(/</g,"&lt;") + '</h4>' +
+                  (g.description ? '<p style="margin:0 0 0.5rem;font-size:0.85rem">' + g.description.replace(/</g,"&lt;") + '</p>' : '') +
+                  '<div class="foot"><span class="miembros">' + g.member_count + ' miembro' + (g.member_count !== 1 ? 's' : '') + '</span>' +
+                  '<button type="button" class="js-group-action" data-id="' + g.id + '" data-member="' + g.isMember + '" style="' + btnStyle + '">' + btnLabel + '</button>' +
+                  '</div></div></article>';
+              }).join("");
+
+              list.querySelectorAll(".js-group-action").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                  var gId = btn.getAttribute("data-id");
+                  var isMember = btn.getAttribute("data-member") === "true";
+                  btn.disabled = true;
+                  var url = API_BASE + "/study-groups/" + gId + (isMember ? "/leave" : "/join");
+                  var method = isMember ? "DELETE" : "POST";
+                  fetch(url, { method: method, headers: authHeaders() })
+                    .then(function() { loadStudyGroups(); })
+                    .catch(function() { showStatus("error", "Error al actualizar grupo."); btn.disabled = false; });
+                });
+              });
+            })
+            .catch(function() { document.getElementById("study-groups-list").innerHTML = '<em style="color:#9ca3af">Error al cargar grupos</em>'; });
+        }
+        loadStudyGroups();
+
+        // Modal crear grupo
+        var createGroupOverlay = document.getElementById("create-group-overlay");
+        document.getElementById("btn-create-group").addEventListener("click", function() {
+          document.getElementById("group-name-input").value = "";
+          document.getElementById("group-desc-input").value = "";
+          createGroupOverlay.style.display = "flex";
+        });
+        document.getElementById("create-group-cancel").addEventListener("click", function() {
+          createGroupOverlay.style.display = "none";
+        });
+        createGroupOverlay.addEventListener("click", function(e) {
+          if (e.target === createGroupOverlay) createGroupOverlay.style.display = "none";
+        });
+        document.getElementById("create-group-ok").addEventListener("click", function() {
+          var name = document.getElementById("group-name-input").value.trim();
+          var desc = document.getElementById("group-desc-input").value.trim();
+          if (!name) { showStatus("error", "El nombre del grupo es obligatorio."); return; }
+          var btn = document.getElementById("create-group-ok");
+          btn.disabled = true;
+          fetch(API_BASE + "/study-groups", {
+            method: "POST", headers: authHeaders(),
+            body: JSON.stringify({ name: name, description: desc })
+          })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+              if (!res.ok) { showStatus("error", res.data.message || "No se pudo crear."); return; }
+              showStatus("success", "Grupo creado correctamente.");
+              createGroupOverlay.style.display = "none";
+              loadStudyGroups();
+            })
+            .catch(function() { showStatus("error", "Error de conexión."); })
+            .finally(function() { btn.disabled = false; });
+        });
+        // Avatar dinámico
+        var avatarEl = document.getElementById("btn-perfil-alumno");
+        if (avatarEl && session.user.name) {
+          avatarEl.textContent = session.user.name.charAt(0).toUpperCase();
+        }
+        var nameHdr = document.getElementById("user-name-header");
+        if (nameHdr && session.user.name) {
+          nameHdr.textContent = session.user.name.split(" ")[0];
+        }
+
+        // Comunidad de estudiantes
+        function renderStudentPost(post) {
+          var colors = ["blue","green","purple"];
+          var color = colors[post.author.charCodeAt(0) % colors.length];
+          var article = document.createElement("article");
+          article.className = "post-card" + (color === "green" ? " verde" : "");
+          article.innerHTML = '<div class="avatar ' + color + '">' + post.author.charAt(0).toUpperCase() + '</div>' +
+            '<div class="content"><div class="author">' + post.author + '</div>' +
+            '<div class="text">' + post.text.replace(/</g,"&lt;") + '</div>' +
+            '<div class="meta">' + post.ago + ' · <button type="button" class="btn-like-post" data-like-id="' + post.id + '" style="background:none;border:none;cursor:pointer;font-size:0.85rem;color:#6b7280;padding:0">👍 ' + post.likes + '</button></div></div>';
+          return article;
+        }
+
+        function loadStudentPosts() {
+          var list = document.getElementById("student-posts-list");
+          if (!list) return;
+          fetch(API_BASE + "/community/student-posts", { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(posts) {
+              list.innerHTML = "";
+              if (!posts.length) {
+                list.innerHTML = '<p style="color:#6b7280;font-size:0.88rem">Sé el primero en publicar.</p>';
+                return;
+              }
+              posts.forEach(function(p) { list.appendChild(renderStudentPost(p)); });
+            })
+            .catch(function() {});
+        }
+
+        var publishBtn = document.getElementById("publish-student-post");
+        if (publishBtn) {
+          publishBtn.addEventListener("click", function() {
+            var textarea = document.getElementById("student-post-text");
+            var text = textarea ? textarea.value.trim() : "";
+            if (!text) return;
+            publishBtn.disabled = true;
+            publishBtn.textContent = "Publicando...";
+            fetch(API_BASE + "/community/student-posts", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({ text: text })
+            })
+              .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+              .then(function(res) {
+                if (!res.ok) { showStatus("error", res.data.message || "No se pudo publicar."); return; }
+                if (textarea) textarea.value = "";
+                loadStudentPosts();
+                showStatus("success", "Post publicado.");
+              })
+              .catch(function() { showStatus("error", "No se pudo publicar."); })
+              .finally(function() {
+                publishBtn.disabled = false;
+                publishBtn.textContent = "Publicar";
+              });
+          });
+        }
+        loadStudentPosts();
+
+        var studentPostsList = document.getElementById("student-posts-list");
+        if (studentPostsList) {
+          studentPostsList.addEventListener("click", function (e) {
+            var btn = e.target.closest(".btn-like-post");
+            if (!btn) return;
+            var id = btn.getAttribute("data-like-id");
+            btn.disabled = true;
+            fetch(API_BASE + "/community/student-posts/" + id + "/like", { method: "POST", headers: authHeaders() })
+              .then(function (r) { return r.json(); })
+              .then(function (data) { btn.textContent = "👍 " + data.likes; })
+              .catch(function () {})
+              .finally(function () { btn.disabled = false; });
+          });
+        }
+
+
+        function fmtTime(iso) {
+          if (!iso || iso === "Ahora mismo") return "Ahora mismo";
+          try {
+            var d = new Date(iso);
+            if (isNaN(d)) return iso;
+            var diff = Date.now() - d.getTime();
+            if (diff < 60000) return "hace un momento";
+            if (diff < 3600000) return "hace " + Math.floor(diff / 60000) + " min";
+            if (diff < 86400000) return d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+            return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" });
+          } catch(_) { return iso; }
+        }
+
+        // Novedades y resumen desde datos reales
+        function loadNovedades() {
+          Promise.all([
+            fetch(API_BASE + "/attendance/my", { headers: authHeaders() }).then(function(r) { return r.json(); }).catch(function() { return { pending: [], confirmed: [] }; }),
+            fetch(API_BASE + "/evaluations", { headers: authHeaders() }).then(function(r) { return r.json(); }).catch(function() { return []; })
+          ]).then(function(results) {
+            var att = results[0];
+            var evals = results[1];
+            renderAsistenciaHistorial(att);
+            renderEvaluaciones(evals);
+            var items = [];
+
+            // Asistencias pendientes
+            (att.pending || []).forEach(function(a) {
+              items.push({ color: "orange", nueva: true, title: "Asistencia pendiente de confirmación", text: a.area, time: fmtTime(a.scanned_at) });
+            });
+            // Asistencias confirmadas (últimas 2)
+            (att.confirmed || []).slice(0, 2).forEach(function(a) {
+              items.push({ color: "green", nueva: false, title: "Asistencia confirmada", text: a.area, time: fmtTime(a.time) });
+            });
+            // Evaluaciones recibidas
+            evals.slice(0, 3).forEach(function(e) {
+              items.push({ color: "blue", nueva: true, title: "Nueva evaluación recibida", text: e.rotation + " · " + e.total + "/5", time: "" });
+            });
+
+            // Actualizar resumen card
+            var resAtt = document.getElementById("resumen-asistencia");
+            if (resAtt) {
+              var pendCount = (att.pending || []).length;
+              resAtt.querySelector(".detalle").textContent = pendCount > 0
+                ? pendCount + " pendiente" + (pendCount > 1 ? "s" : "") + " de confirmación"
+                : "Sin asistencias pendientes";
+            }
+            var resEval = document.getElementById("resumen-evaluaciones");
+            if (resEval) {
+              resEval.querySelector(".detalle").textContent = evals.length > 0
+                ? evals.length + " evaluación" + (evals.length > 1 ? "es" : "") + " recibida" + (evals.length > 1 ? "s" : "")
+                : "Aún no tienes evaluaciones";
+            }
+
+            // Renderizar lista de novedades
+            var list = document.getElementById("noti-list");
+            var badge = document.getElementById("noti-badge");
+            if (!list) return;
+            if (!items.length) {
+              list.innerHTML = '<article class="noti-item"><span class="dot blue"></span><div><h4>Sin novedades</h4><p>Todo al día. Vuelve más tarde.</p></div></article>';
+              return;
+            }
+            var nuevas = items.filter(function(i) { return i.nueva; }).length;
+            if (badge && nuevas > 0) { badge.textContent = nuevas + " nueva" + (nuevas > 1 ? "s" : ""); badge.style.display = ""; }
+            list.innerHTML = items.map(function(i) {
+              return '<article class="noti-item' + (i.nueva ? " nueva" : "") + '">' +
+                '<span class="dot ' + i.color + '"></span>' +
+                '<div><h4>' + i.title + '</h4>' + (i.text ? '<p>' + i.text + '</p>' : '') + '</div>' +
+                (i.time ? '<span class="time">' + i.time + '</span>' : '') +
+                '</article>';
+            }).join("");
+          });
+        }
+        window._loadNovedades = loadNovedades;
+        loadNovedades();
+
+        // Polling de notificaciones (cada 30s)
+        var _lastPendingIds = null;
+        function pollAttendance() {
+          fetch(API_BASE + "/attendance/my", { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(att) {
+              var currentIds = (att.pending || []).map(function(a) { return a.id; }).sort().join(",");
+              if (_lastPendingIds === null) {
+                _lastPendingIds = currentIds;
+                return;
+              }
+              if (currentIds !== _lastPendingIds) {
+                var prev = _lastPendingIds.split(",").filter(Boolean);
+                var curr = currentIds.split(",").filter(Boolean);
+                var removed = prev.filter(function(id) { return !curr.includes(id); });
+                if (removed.length) {
+                  showStatus("success", "Tu tutor ha revisado tu asistencia.");
+                  loadNovedades();
+                }
+                _lastPendingIds = currentIds;
+              }
+            })
+            .catch(function() {});
+        }
+        setInterval(pollAttendance, 30000);
+
+        // Evaluaciones recibidas
+        function renderEvaluaciones(evals) {
+          renderCompetencias(evals);
+          var container = document.getElementById("mis-evaluaciones");
+          if (!container || !evals.length) return;
+          var html = '<div style="border-top:1px solid #e5e7eb;padding-top:0.75rem;margin-top:0.5rem"><strong style="font-size:0.88rem;color:#374151">Evaluaciones recibidas</strong>';
+          evals.slice(0, 3).forEach(function(e) {
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f3f4f6;font-size:0.85rem">' +
+              '<span>' + e.rotation + '</span>' +
+              '<span style="font-weight:700;color:#2563eb">' + e.total + '/5</span></div>';
+          });
+          html += '</div>';
+          container.innerHTML = html;
+        }
+
+        // ── PRE-ROTACIÓN PREPARATION MODULES ───────────────────────────────
+        var currentObjectives = [];
+        var selectedPrepRotationId = "";
+
+        var epas = [
+          "EPA 1: Valorar a un paciente, realizar una anamnesis y exploración física.",
+          "EPA 2: Priorizar un diagnóstico diferencial.",
+          "EPA 3: Recomendar e interpretar pruebas diagnósticas comunes.",
+          "EPA 4: Formular e introducir un plan diagnóstico y terapéutico.",
+          "EPA 5: Documentar y realizar el seguimiento de un encuentro clínico.",
+          "EPA 6: Realizar una presentación oral de un encuentro clínico.",
+          "EPA 7: Formular preguntas clínicas y recuperar evidencias.",
+          "EPA 8: Dar o recibir un traspaso de pacientes (handover).",
+          "EPA 9: Colaborar como miembro de un equipo interprofesional.",
+          "EPA 10: Reconocer a un paciente que requiere atención urgente y dar tratamiento inicial."
+        ];
+
+        function renderEpas() {
+          var t0List = document.getElementById("epa-list-t0");
+          if (t0List) {
+            t0List.innerHTML = epas.map(function(epa, idx) {
+              var epaKey = "epa" + (idx + 1);
+              return '<div style="margin-bottom:0.75rem;border-bottom:1px solid #f1f5f9;padding-bottom:0.5rem">' +
+                '<div style="font-size:0.85rem;font-weight:500;margin-bottom:0.35rem">' + epa + '</div>' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--gray-600)">' +
+                  '<span>No expuesto (1)</span>' +
+                  '<input type="range" class="epa-range-t0" data-epa="' + epaKey + '" min="1" max="5" value="3" style="flex:1;margin:0 1rem" />' +
+                  '<span>Autónomo (5)</span>' +
+                  '<strong class="epa-val-t0" style="margin-left:0.5rem;font-size:0.85rem;color:var(--blue)">3</strong>' +
+                '</div>' +
+              '</div>';
+            }).join("");
+
+            t0List.querySelectorAll(".epa-range-t0").forEach(function(range) {
+              range.addEventListener("input", function() {
+                range.parentNode.querySelector(".epa-val-t0").textContent = range.value;
+              });
+            });
+          }
+
+          var t1List = document.getElementById("epa-list-t1");
+          if (t1List) {
+            t1List.innerHTML = epas.map(function(epa, idx) {
+              var epaKey = "epa" + (idx + 1);
+              return '<div style="margin-bottom:1rem;border-bottom:1px solid #f1f5f9;padding-bottom:0.75rem">' +
+                '<div style="font-size:0.85rem;font-weight:500;margin-bottom:0.4rem">' + epa + '</div>' +
+                '<div style="margin-bottom:0.4rem">' +
+                  '<div style="font-size:0.75rem;color:var(--gray-600);margin-bottom:0.15rem">Confianza al final de la rotación (T1):</div>' +
+                  '<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--gray-600)">' +
+                    '<span>1</span>' +
+                    '<input type="range" class="epa-range-t1" data-epa="' + epaKey + '" min="1" max="5" value="3" style="flex:1;margin:0 1rem" />' +
+                    '<span>5</span>' +
+                    '<strong class="epa-val-t1" style="margin-left:0.5rem;font-size:0.82rem;color:var(--blue)">3</strong>' +
+                  '</div>' +
+                '</div>' +
+                '<div>' +
+                  '<div style="font-size:0.75rem;color:var(--gray-600);margin-bottom:0.15rem">Confianza retrospectiva al inicio (Then-T0):</div>' +
+                  '<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--gray-600)">' +
+                    '<span>1</span>' +
+                    '<input type="range" class="epa-range-retrot0" data-epa="' + epaKey + '" min="1" max="5" value="3" style="flex:1;margin:0 1rem" />' +
+                    '<span>5</span>' +
+                    '<strong class="epa-val-retrot0" style="margin-left:0.5rem;font-size:0.82rem;color:var(--indigo)">3</strong>' +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+            }).join("");
+
+            t1List.querySelectorAll(".epa-range-t1").forEach(function(range) {
+              range.addEventListener("input", function() {
+                range.parentNode.querySelector(".epa-val-t1").textContent = range.value;
+              });
+            });
+            t1List.querySelectorAll(".epa-range-retrot0").forEach(function(range) {
+              range.addEventListener("input", function() {
+                range.parentNode.querySelector(".epa-val-retrot0").textContent = range.value;
+              });
+            });
+          }
+        }
+        renderEpas();
+
+        function renderChecklist(acquiredList) {
+          var wrap = document.getElementById("prep-checklist-wrap");
+          if (!wrap) return;
+          if (!currentObjectives.length) {
+            wrap.innerHTML = '<p style="color:#9ca3af;font-size:0.85rem">Selecciona una rotación para ver la lista de competencias.</p>';
+            return;
+          }
+          wrap.innerHTML = currentObjectives.map(function(obj, idx) {
+            var checked = acquiredList.some(function(item) { return item.itemIndex === idx && item.isAcquired; }) ? "checked" : "";
+            return '<label style="display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0;font-size:0.88rem;cursor:pointer;border-bottom:1px solid #f1f5f9">' +
+              '<input type="checkbox" class="checklist-toggle" data-idx="' + idx + '" ' + checked + ' style="width:16px;height:16px" />' +
+              '<span>' + obj + '</span>' +
+            '</label>';
+          }).join("");
+
+          wrap.querySelectorAll(".checklist-toggle").forEach(function(cb) {
+            cb.addEventListener("change", function() {
+              var idx = parseInt(cb.getAttribute("data-idx"));
+              var isAcquired = cb.checked;
+              fetch(API_BASE + "/prep/checklist/" + idx, {
+                method: "PUT",
+                headers: authHeaders(),
+                body: JSON.stringify({ isAcquired: isAcquired })
+              })
+              .then(function(r) { return r.json(); })
+              .then(function() { showStatus("success", "Lista de verificación guardada."); })
+              .catch(function() { cb.checked = !isAcquired; showStatus("error", "Error al guardar competencia."); });
+            });
+          });
+        }
+
+        function loadAssessmentsStatus() {
+          if (!selectedPrepRotationId) return;
+          fetch(API_BASE + "/prep/assessments/" + selectedPrepRotationId, { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(list) {
+              var hasT0 = list.some(function(a) { return a.timepoint === "T0"; });
+              var hasT1 = list.some(function(a) { return a.timepoint === "T1"; });
+              
+              var t0Panel = document.getElementById("panel-t0");
+              var t1Panel = document.getElementById("panel-t1");
+              
+              var btnT0 = document.getElementById("btn-submit-t0");
+              if (hasT0) {
+                btnT0.disabled = true;
+                btnT0.style.background = "#9ca3af";
+                btnT0.textContent = "Autoevaluación T0 Enviada ✓";
+              } else {
+                btnT0.disabled = false;
+                btnT0.style.background = "";
+                btnT0.textContent = "Enviar Autoevaluación T0";
+              }
+              
+              var btnT1 = document.getElementById("btn-submit-t1");
+              if (hasT1) {
+                btnT1.disabled = true;
+                btnT1.style.background = "#9ca3af";
+                btnT1.textContent = "Autoevaluaciones T1 + Retro-T0 Enviadas ✓";
+              } else {
+                btnT1.disabled = false;
+                btnT1.style.background = "";
+                btnT1.textContent = "Enviar Autoevaluaciones (T1 + Retro-T0)";
+              }
+            });
+        }
+
+        var prepSelectListener = document.getElementById("prep-rotation-select");
+        if (prepSelectListener) {
+          prepSelectListener.addEventListener("change", function() {
+            var val = prepSelectListener.value;
+            if (!val) {
+              document.getElementById("prep-main-panel").style.display = "none";
+              document.getElementById("prep-access-badge").style.display = "none";
+              selectedPrepRotationId = "";
+              return;
+            }
+            
+            selectedPrepRotationId = val;
+            var opt = prepSelectListener.options[prepSelectListener.selectedIndex];
+            var serviceId = opt.getAttribute("data-service-id");
+            
+            fetch(API_BASE + "/prep/modules/" + serviceId, { headers: authHeaders() })
+              .then(function(r) {
+                if (!r.ok) throw new Error();
+                return r.json();
+              })
+              .then(function(data) {
+                document.getElementById("prep-main-panel").style.display = "block";
+                document.getElementById("prep-service-header").textContent = "Preparación de la especialidad: " + data.serviceName + " (" + data.hospitalName + ")";
+                
+                document.querySelector("#prep-service-guide .content").textContent = data.guide;
+                document.querySelector("#prep-tutor-expectations .content").textContent = data.expectations;
+                document.querySelector("#prep-patient-safety .content").textContent = data.safetyGuide;
+                
+                var objList = document.querySelector("#prep-learning-objectives .content");
+                objList.innerHTML = data.objectives.map(function(o) { return '<li>' + o + '</li>'; }).join("");
+                
+                currentObjectives = data.objectives;
+                
+                var tbody = document.querySelector("#prep-diagnoses-table tbody");
+                tbody.innerHTML = data.diagnoses.map(function(d) {
+                  return '<tr>' +
+                    '<td style="font-weight:600;color:var(--blue)">' + d.name + '</td>' +
+                    '<td>' + d.definition + '</td>' +
+                    '<td>' + d.symptoms + '</td>' +
+                    '<td>' + d.signs + '</td>' +
+                    '<td>' + d.tests + '</td>' +
+                    '<td>' + d.treatment + '</td>' +
+                  '</tr>';
+                }).join("");
+                
+                fetch(API_BASE + "/prep/modules/" + serviceId + "/access", {
+                  method: "POST",
+                  headers: authHeaders()
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(accessRes) {
+                  if (accessRes.ok) {
+                    document.getElementById("prep-access-badge").style.display = "inline-block";
+                  }
+                })
+                .catch(function() {});
+                
+                fetch(API_BASE + "/prep/checklist", { headers: authHeaders() })
+                  .then(function(res) { return res.json(); })
+                  .then(function(checklistList) {
+                    renderChecklist(checklistList);
+                  })
+                  .catch(function() {});
+                  
+                loadAssessmentsStatus();
+              })
+              .catch(function() {
+                showStatus("error", "Error al cargar la información de preparación de la rotación.");
+              });
+          });
+        }
+
+        var tabT0 = document.getElementById("tab-t0");
+        var tabT1 = document.getElementById("tab-t1");
+        var panelT0 = document.getElementById("panel-t0");
+        var panelT1 = document.getElementById("panel-t1");
+
+        if (tabT0 && tabT1 && panelT0 && panelT1) {
+          tabT0.addEventListener("click", function() {
+            tabT0.classList.add("active");
+            tabT1.classList.remove("active");
+            panelT0.style.display = "block";
+            panelT1.style.display = "none";
+          });
+          tabT1.addEventListener("click", function() {
+            tabT1.classList.add("active");
+            tabT0.classList.remove("active");
+            panelT1.style.display = "block";
+            panelT0.style.display = "none";
+          });
+        }
+
+        var submitT0Btn = document.getElementById("btn-submit-t0");
+        if (submitT0Btn) {
+          submitT0Btn.addEventListener("click", function() {
+            if (!selectedPrepRotationId) return;
+            
+            var goals = document.getElementById("t0-goals").value.trim();
+            if (!goals) {
+              showStatus("error", "Los objetivos de aprendizaje son obligatorios.");
+              return;
+            }
+            
+            var answers = {};
+            document.querySelectorAll(".epa-range-t0").forEach(function(range) {
+              var epa = range.getAttribute("data-epa");
+              answers[epa] = parseInt(range.value);
+            });
+            
+            setButtonLoading(submitT0Btn, "Enviando...", true);
+            
+            fetch(API_BASE + "/prep/assessments", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                rotationId: selectedPrepRotationId,
+                timepoint: "T0",
+                answers: answers,
+                goals: goals
+              })
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+              if (!res.ok) {
+                showStatus("error", res.data.message || "Error al enviar autoevaluación.");
+                return;
+              }
+              showStatus("success", "Autoevaluación de entrada (T0) enviada.");
+              loadAssessmentsStatus();
+            })
+            .catch(function() {
+              showStatus("error", "Error de conexión.");
+            })
+            .finally(function() {
+              setButtonLoading(submitT0Btn, "Enviar Autoevaluación T0", false);
+            });
+          });
+        }
+
+        var submitT1Btn = document.getElementById("btn-submit-t1");
+        if (submitT1Btn) {
+          submitT1Btn.addEventListener("click", function() {
+            if (!selectedPrepRotationId) return;
+            
+            var answersT1 = {};
+            document.querySelectorAll(".epa-range-t1").forEach(function(range) {
+              var epa = range.getAttribute("data-epa");
+              answersT1[epa] = parseInt(range.value);
+            });
+            
+            var answersRetro = {};
+            document.querySelectorAll(".epa-range-retrot0").forEach(function(range) {
+              var epa = range.getAttribute("data-epa");
+              answersRetro[epa] = parseInt(range.value);
+            });
+            
+            setButtonLoading(submitT1Btn, "Enviando...", true);
+            
+            fetch(API_BASE + "/prep/assessments", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                rotationId: selectedPrepRotationId,
+                timepoint: "T1",
+                answers: answersT1
+              })
+            })
+            .then(function(r1) {
+              if (!r1.ok) throw new Error("Error en T1");
+              return fetch(API_BASE + "/prep/assessments", {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({
+                  rotationId: selectedPrepRotationId,
+                  timepoint: "retro_T0",
+                  answers: answersRetro
+                })
+              });
+            })
+            .then(function(r2) {
+              if (!r2.ok) throw new Error("Error en Retro-T0");
+              showStatus("success", "Autoevaluaciones de salida (T1 + Retro-T0) enviadas con éxito.");
+              loadAssessmentsStatus();
+            })
+            .catch(function() {
+              showStatus("error", "Error al enviar autoevaluaciones de salida.");
+            })
+            .finally(function() {
+              setButtonLoading(submitT1Btn, "Enviar Autoevaluaciones (T1 + Retro-T0)", false);
+            });
+          });
+        }
+
+        // ── AI TRAINING ZONE ───────────────────────────────────────────────
+        var currentPatientSessionId = null;
+
+        function loadPatientCases() {
+          var select = document.getElementById("ai-case-select");
+          if (!select) return;
+          fetch(API_BASE + "/ai/training/cases", { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(cases) {
+              select.innerHTML = '<option value="">Selecciona un caso...</option>' + cases.map(function(c) {
+                return '<option value="' + c.id + '">' + c.title + ' (' + c.specialty + ')</option>';
+              }).join("");
+            })
+            .catch(function() {
+              select.innerHTML = '<option value="">Error al cargar casos</option>';
+            });
+        }
+        loadPatientCases();
+
+        var startBtn = document.getElementById("btn-start-patient");
+        if (startBtn) {
+          startBtn.addEventListener("click", function() {
+            var caseId = document.getElementById("ai-case-select").value;
+            if (!caseId) { showStatus("error", "Selecciona un caso clínico."); return; }
+            
+            setButtonLoading(startBtn, "Iniciando...", true);
+            fetch(API_BASE + "/ai/training/sessions", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({ caseId: caseId })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(session) {
+              currentPatientSessionId = session.sessionId;
+              document.getElementById("ai-patient-chat-container").style.display = "block";
+              document.getElementById("ai-patient-feedback-panel").style.display = "none";
+              
+              var chatWrap = document.getElementById("ai-patient-messages");
+              chatWrap.innerHTML = '<div style="margin-bottom:0.75rem">' +
+                '<strong style="color:var(--indigo)">Paciente:</strong>' +
+                '<div style="background:#f1f5f9;border-radius:10px;padding:0.5rem 0.75rem;font-size:0.88rem;margin-top:0.25rem">' + session.initialMessage + '</div>' +
+              '</div>';
+              chatWrap.scrollTop = chatWrap.scrollHeight;
+              showStatus("success", "Sesión iniciada.");
+            })
+            .catch(function() {
+              showStatus("error", "No se pudo iniciar la sesión de simulación.");
+            })
+            .finally(function() {
+              setButtonLoading(startBtn, "Iniciar Simulación", false);
+            });
+          });
+        }
+
+        function sendPatientMessage() {
+          var input = document.getElementById("ai-patient-input");
+          var text = input.value.trim();
+          if (!text || !currentPatientSessionId) return;
+          input.value = "";
+          
+          var chatWrap = document.getElementById("ai-patient-messages");
+          chatWrap.innerHTML += '<div style="margin-bottom:0.75rem;text-align:right">' +
+            '<strong style="color:var(--blue)">Tú (Médico):</strong>' +
+            '<div style="background:#dbeafe;color:#1e40af;border-radius:10px;padding:0.5rem 0.75rem;font-size:0.88rem;margin-top:0.25rem;display:inline-block;text-align:left">' + text + '</div>' +
+          '</div>';
+          chatWrap.scrollTop = chatWrap.scrollHeight;
+          
+          fetch(API_BASE + "/ai/training/sessions/" + currentPatientSessionId + "/chat", {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ message: text })
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            chatWrap.innerHTML += '<div style="margin-bottom:0.75rem">' +
+              '<strong style="color:var(--indigo)">Paciente:</strong>' +
+              '<div style="background:#f1f5f9;border-radius:10px;padding:0.5rem 0.75rem;font-size:0.88rem;margin-top:0.25rem">' + data.response + '</div>' +
+            '</div>';
+            chatWrap.scrollTop = chatWrap.scrollHeight;
+          })
+          .catch(function() {
+            showStatus("error", "Error al enviar mensaje al paciente.");
+          });
+        }
+
+        var patientSendBtn = document.getElementById("btn-send-patient-msg");
+        if (patientSendBtn) {
+          patientSendBtn.addEventListener("click", sendPatientMessage);
+        }
+        var patientInput = document.getElementById("ai-patient-input");
+        if (patientInput) {
+          patientInput.addEventListener("keydown", function(e) { if (e.key === "Enter") sendPatientMessage(); });
+        }
+
+        var evaluateBtn = document.getElementById("btn-evaluate-patient");
+        if (evaluateBtn) {
+          evaluateBtn.addEventListener("click", function() {
+            if (!currentPatientSessionId) return;
+            if (!confirm("¿Seguro que deseas finalizar y evaluar el interrogatorio?")) return;
+            
+            setButtonLoading(evaluateBtn, "Evaluando...", true);
+            fetch(API_BASE + "/ai/training/sessions/" + currentPatientSessionId + "/evaluate", {
+              method: "POST",
+              headers: authHeaders()
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(result) {
+              document.getElementById("ai-patient-chat-container").style.display = "none";
+              var fbPanel = document.getElementById("ai-patient-feedback-panel");
+              var fbContent = document.getElementById("ai-patient-feedback-content");
+              fbPanel.style.display = "block";
+              fbContent.textContent = result.feedback;
+              currentPatientSessionId = null;
+              showStatus("success", "Sesión evaluada.");
+            })
+            .catch(function() {
+              showStatus("error", "No se pudo evaluar la sesión.");
+            })
+            .finally(function() {
+              setButtonLoading(evaluateBtn, "Finalizar e Historial Clínico", false);
+            });
+          });
+        }
+
+        var socraticSteps = { abg: 1, ecg: 1 };
+
+        var tabAbg = document.getElementById("tab-socratic-abg");
+        var tabEcg = document.getElementById("tab-socratic-ecg");
+        var panelAbg = document.getElementById("socratic-abg-panel");
+        var panelEcg = document.getElementById("socratic-ecg-panel");
+
+        if (tabAbg && tabEcg && panelAbg && panelEcg) {
+          tabAbg.addEventListener("click", function() {
+            tabAbg.classList.add("active");
+            tabEcg.classList.remove("active");
+            panelAbg.style.display = "block";
+            panelEcg.style.display = "none";
+          });
+          tabEcg.addEventListener("click", function() {
+            tabEcg.classList.add("active");
+            tabAbg.classList.remove("active");
+            panelEcg.style.display = "block";
+            panelAbg.style.display = "none";
+          });
+        }
+
+        function handleSocraticSubmit(type) {
+          var input = document.getElementById("socratic-" + type + "-input");
+          var btn = document.getElementById("btn-submit-socratic-" + type);
+          var feedbackEl = document.getElementById("socratic-" + type + "-feedback");
+          var historyEl = document.getElementById("socratic-" + type + "-history");
+          
+          var text = input.value.trim();
+          if (!text) return;
+          
+          var currentStep = socraticSteps[type];
+          setButtonLoading(btn, "Evaluando...", true);
+          
+          fetch(API_BASE + "/ai/training/socratic", {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ type: type, step: currentStep, answer: text })
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.isCorrect) {
+              feedbackEl.style.color = "var(--green)";
+              feedbackEl.textContent = "✅ Correcto. " + data.message;
+              socraticSteps[type]++;
+              
+              var nextStep = socraticSteps[type];
+              if (type === "abg") {
+                if (nextStep === 2) {
+                  historyEl.innerHTML += '<br><strong>Tú:</strong> ' + text + '<br><br><strong>Paso 2:</strong> ¿Cuál es el trastorno primario? Mira la pCO2 (55 mmHg) y el HCO3 (26 mEq/L).';
+                } else {
+                  historyEl.innerHTML += '<br><strong>Tú:</strong> ' + text + '<br><br>🎉 ¡Caso de Gasometría completado con éxito!';
+                  input.disabled = true;
+                  btn.disabled = true;
+                }
+              } else if (type === "ecg") {
+                if (nextStep === 2) {
+                  historyEl.innerHTML += '<br><strong>Tú:</strong> ' + text + '<br><br><strong>Paso 2:</strong> ¿Es el ritmo regular o irregular?';
+                } else {
+                  historyEl.innerHTML += '<br><strong>Tú:</strong> ' + text + '<br><br>🎉 ¡Caso de ECG completado con éxito!';
+                  input.disabled = true;
+                  btn.disabled = true;
+                }
+              }
+              input.value = "";
+            } else {
+              feedbackEl.style.color = "#dc2626";
+              feedbackEl.textContent = "❌ " + data.message;
+            }
+          })
+          .catch(function() {
+            showStatus("error", "Error de conexión con el Tutor Socrático.");
+          })
+          .finally(function() {
+            setButtonLoading(btn, "Evaluar", false);
+          });
+        }
+
+        var submitAbg = document.getElementById("btn-submit-socratic-abg");
+        if (submitAbg) {
+          submitAbg.addEventListener("click", function() { handleSocraticSubmit("abg"); });
+          document.getElementById("socratic-abg-input").addEventListener("keydown", function(e) { if (e.key === "Enter") handleSocraticSubmit("abg"); });
+        }
+        var submitEcg = document.getElementById("btn-submit-socratic-ecg");
+        if (submitEcg) {
+          submitEcg.addEventListener("click", function() { handleSocraticSubmit("ecg"); });
+          document.getElementById("socratic-ecg-input").addEventListener("keydown", function(e) { if (e.key === "Enter") handleSocraticSubmit("ecg"); });
+        }
+
+        // ── FLOATING AI ASSISTANT CHATBOT ──────────────────────────────────
+        var floatBtn = document.getElementById("floating-ai-btn");
+        var floatWin = document.getElementById("floating-ai-window");
+        var floatClose = document.getElementById("floating-ai-close");
+
+        if (floatBtn && floatWin && floatClose) {
+          floatBtn.addEventListener("click", function() {
+            var isOpen = floatWin.style.display === "flex";
+            floatWin.style.display = isOpen ? "none" : "flex";
+            if (!isOpen) {
+              var msgWrap = document.getElementById("floating-ai-messages");
+              if (!msgWrap.children.length) {
+                msgWrap.innerHTML = '<div style="margin-bottom:0.6rem">' +
+                  '<strong style="color:var(--blue)">Asistente IA:</strong>' +
+                  '<div style="background:#f1f5f9;border-radius:8px;padding:0.45rem 0.65rem;font-size:0.8rem;margin-top:0.15rem">¡Hola! Soy tu asistente de rotaciones. Pregúntame sobre normas de seguridad, higiene de manos o sospecha de patologías frecuentes de tu servicio.</div>' +
+                '</div>';
+              }
+              document.getElementById("floating-ai-input").focus();
+            }
+          });
+          floatClose.addEventListener("click", function() {
+            floatWin.style.display = "none";
+          });
+        }
+
+        function sendFloatingAiMessage() {
+          var input = document.getElementById("floating-ai-input");
+          var text = input.value.trim();
+          if (!text) return;
+          input.value = "";
+          
+          var msgWrap = document.getElementById("floating-ai-messages");
+          msgWrap.innerHTML += '<div style="margin-bottom:0.6rem;text-align:right">' +
+            '<strong style="color:var(--indigo)">Tú:</strong>' +
+            '<div style="background:#dbeafe;color:#1e40af;border-radius:8px;padding:0.45rem 0.65rem;font-size:0.8rem;margin-top:0.15rem;display:inline-block;text-align:left">' + text + '</div>' +
+          '</div>';
+          msgWrap.scrollTop = msgWrap.scrollHeight;
+          
+          var serviceId = "";
+          var selectEl = document.getElementById("prep-rotation-select");
+          if (selectEl && selectEl.value) {
+            var opt = selectEl.options[selectEl.selectedIndex];
+            serviceId = opt ? opt.getAttribute("data-service-id") : "";
+          }
+          
+          fetch(API_BASE + "/ai/assistant/chat", {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ message: text, serviceId: serviceId })
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            var citationsHtml = "";
+            if (data.citations && data.citations.length) {
+              citationsHtml = '<div style="font-size:0.7rem;color:#6b7280;margin-top:0.25rem;border-top:1px dashed #e2e8f0;padding-top:0.25rem">' +
+                '<strong>Citas RAG:</strong> ' + data.citations.join(", ") +
+              '</div>';
+            }
+            
+            msgWrap.innerHTML += '<div style="margin-bottom:0.6rem">' +
+              '<strong style="color:var(--blue)">Asistente IA:</strong>' +
+              '<div style="background:#f1f5f9;border-radius:8px;padding:0.45rem 0.65rem;font-size:0.8rem;margin-top:0.15rem">' +
+                '<div>' + data.answer.replace(/\n/g, "<br>") + '</div>' +
+                citationsHtml +
+              '</div>' +
+            '</div>';
+            msgWrap.scrollTop = msgWrap.scrollHeight;
+          })
+          .catch(function() {
+            showStatus("error", "Error de comunicación con el asistente.");
+          });
+        }
+
+        var floatSendBtn = document.getElementById("floating-ai-send");
+        if (floatSendBtn) {
+          floatSendBtn.addEventListener("click", sendFloatingAiMessage);
+        }
+        var floatInput = document.getElementById("floating-ai-input");
+        if (floatInput) {
+          floatInput.addEventListener("keydown", function(e) { if (e.key === "Enter") sendFloatingAiMessage(); });
+        }
+
+        // ── DYNAMIC TEACHING LIBRARY ──────────────────────────────────────
+        function loadLibrary() {
+          var grid = document.getElementById("lib-resources-grid");
+          if (!grid) return;
+          
+          var search = document.getElementById("lib-search-input").value.trim().toLowerCase();
+          var type = document.getElementById("lib-type-filter").value;
+          
+          var url = API_BASE + "/library";
+          var params = [];
+          if (type) params.push("type=" + type);
+          if (params.length) url += "?" + params.join("&");
+          
+          fetch(url, { headers: authHeaders() })
+            .then(function(r) { return r.json(); })
+            .then(function(resources) {
+              var filtered = resources.filter(function(r) {
+                if (!search) return true;
+                var tagsStr = (r.tags || []).join(" ").toLowerCase();
+                return r.title.toLowerCase().includes(search) ||
+                  r.specialty.toLowerCase().includes(search) ||
+                  tagsStr.includes(search) ||
+                  r.tutorName.toLowerCase().includes(search);
+              });
+              
+              if (!filtered.length) {
+                grid.innerHTML = '<p style="color:#6b7280;font-size:0.88rem">No se encontraron recursos didácticos.</p>';
+                return;
+              }
+              
+              grid.innerHTML = filtered.map(function(r) {
+                var emoji = "📖";
+                var color = "blue";
+                if (r.type === "video") { emoji = "🎬"; color = "green"; }
+                else if (r.type === "guia") { emoji = "💡"; color = "purple"; }
+                
+                var tagsHtml = (r.tags || []).map(function(t) {
+                  return '<span style="display:inline-block;font-size:0.7rem;background:#f1f5f9;color:#475569;padding:0.15rem 0.4rem;border-radius:4px;margin-right:0.25rem">' + t + '</span>';
+                }).join("");
+                
+                return '<article class="card recurso-card" style="display:flex;flex-direction:column;justify-content:between">' +
+                  '<div class="icon-wrap ' + color + '" style="font-size:1.2rem;width:38px;height:38px;border-radius:8px">' + emoji + '</div>' +
+                  '<div>' +
+                    '<h3 style="font-size:0.95rem;margin:0 0 0.25rem">' + r.title + '</h3>' +
+                    '<p style="font-size:0.78rem;color:#6b7280;margin:0 0 0.5rem">' + r.specialty + ' · Subido por ' + r.tutorName + '</p>' +
+                    '<div style="margin-bottom:0.6rem">' + tagsHtml + '</div>' +
+                  '</div>' +
+                  '<a href="' + r.url + '" target="_blank" rel="noopener" class="' + color + '" style="font-size:0.82rem;font-weight:600;margin-top:auto">Ver Recurso →</a>' +
+                '</article>';
+              }).join("");
+            })
+            .catch(function() {
+              grid.innerHTML = '<p style="color:#dc2626;font-size:0.88rem">Error al cargar la biblioteca.</p>';
+            });
+        }
+
+        var libSearch = document.getElementById("lib-search-input");
+        if (libSearch) {
+          libSearch.addEventListener("input", loadLibrary);
+        }
+        var libFilter = document.getElementById("lib-type-filter");
+        if (libFilter) {
+          libFilter.addEventListener("change", loadLibrary);
+        }
+        loadLibrary();
+
+        // ── DOUBLE-BLIND POST-ROTATION FEEDBACK (MCPI) ──────────────────────
+        var selectedMcpiRotationId = null;
+        var selectedMcpiScores = {};
+
+        document.querySelectorAll(".likert-scale").forEach(function(scaleEl) {
+          var key = scaleEl.getAttribute("data-mcpi");
+          var spans = scaleEl.querySelectorAll("span");
+          spans.forEach(function(span, idx) {
+            span.style.cursor = "pointer";
+            span.addEventListener("click", function() {
+              var val = idx + 1;
+              selectedMcpiScores[key] = val;
+              spans.forEach(function(other, j) {
+                other.style.background = j === idx ? "var(--blue)" : "#f3f4f6";
+                other.style.color = j === idx ? "#fff" : "var(--gray-900)";
+                other.style.borderColor = j === idx ? "var(--blue)" : "#e5e7eb";
+              });
+            });
+          });
+        });
+
+        function openMcpiModal(rotationId, serviceName) {
+          selectedMcpiRotationId = rotationId;
+          selectedMcpiScores = {};
+          
+          document.getElementById("mcpi-positive").value = "";
+          document.getElementById("mcpi-negative").value = "";
+          
+          document.querySelectorAll(".likert-scale span").forEach(function(span) {
+            span.style.background = "#f3f4f6";
+            span.style.color = "var(--gray-900)";
+            span.style.borderColor = "#e5e7eb";
+          });
+          
+          document.getElementById("mcpi-modal-title").textContent = "Formulario de Feedback de la Rotación (MCPI) - " + serviceName;
+          document.getElementById("mcpi-modal-overlay").classList.add("open");
+        }
+
+        var mcpiClose = document.getElementById("mcpi-modal-close");
+        if (mcpiClose) {
+          mcpiClose.addEventListener("click", function() {
+            document.getElementById("mcpi-modal-overlay").classList.remove("open");
+          });
+        }
+        var mcpiOverlay = document.getElementById("mcpi-modal-overlay");
+        if (mcpiOverlay) {
+          mcpiOverlay.addEventListener("click", function(e) {
+            if (e.target === mcpiOverlay) mcpiOverlay.classList.remove("open");
+          });
+        }
+
+        var submitMcpiBtn = document.getElementById("btn-submit-mcpi");
+        if (submitMcpiBtn) {
+          submitMcpiBtn.addEventListener("click", function() {
+            if (!selectedMcpiRotationId) return;
+            
+            var items = ["A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","D1","D2","D3","G1"];
+            var missed = items.filter(function(k) { return !selectedMcpiScores[k]; });
+            if (missed.length > 0) {
+              showStatus("error", "Por favor, valora todos los ítems de la escala (1-7). Faltan: " + missed.join(", "));
+              return;
+            }
+            
+            var posText = document.getElementById("mcpi-positive").value.trim();
+            var negText = document.getElementById("mcpi-negative").value.trim();
+            
+            if (posText.length < 20) {
+              showStatus("error", "Aspectos positivos debe tener al menos 20 caracteres.");
+              return;
+            }
+            if (negText.length < 20) {
+              showStatus("error", "Aspectos a mejorar debe tener al menos 20 caracteres.");
+              return;
+            }
+            
+            setButtonLoading(submitMcpiBtn, "Enviando...", true);
+            
+            var answers = {};
+            items.forEach(function(k) { answers[k] = selectedMcpiScores[k]; });
+            answers.positive = posText;
+            answers.negative = negText;
+            
+            fetch(API_BASE + "/feedback/submit", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({ rotationId: selectedMcpiRotationId, answers: answers })
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+              if (!res.ok) {
+                showStatus("error", res.data.message || "Error al enviar el feedback.");
+                return;
+              }
+              showStatus("success", "¡Feedback MCPI enviado con éxito (Doble Ciego)!");
+              document.getElementById("mcpi-modal-overlay").classList.remove("open");
+              
+              if (window._loadNovedades) window._loadNovedades();
+              
+              fetch(API_BASE + "/rotations", { headers: authHeaders() })
+                .then(function(r) { return r.json(); })
+                .then(function(rots) { renderRotacionesProgreso(rots); });
+            })
+            .catch(function() {
+              showStatus("error", "Error de red al enviar el feedback.");
+            })
+            .finally(function() {
+              setButtonLoading(submitMcpiBtn, "Enviar Feedback Double-Blind", false);
+            });
+          });
+        }
+
+        window.addEventListener("online", updateSystemIndicator);
+        window.addEventListener("offline", updateSystemIndicator);
+        updateSystemIndicator();
+        setupScrollSpy();
+        setupCompactNav();
+        setupUndoControls();
+        setupScrollTop();
+        setInterval(updateSystemIndicator, 15000);
+      })();
+    </script>
+
+    <!-- Floating AI Widget -->
+    <button type="button" class="floating-ai-btn" id="floating-ai-btn" title="Asistente de IA" aria-label="Asistente de IA">🤖</button>
+    <div class="floating-ai-window" id="floating-ai-window">
+      <div class="floating-ai-header">
+        <span>Asistente Mediloop</span>
+        <button type="button" id="floating-ai-close" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer">✕</button>
+      </div>
+      <div class="ai-chat-messages" id="floating-ai-messages">
+        <div class="ai-msg bot">Hola, soy tu asistente de Mediloop. ¿Tienes alguna duda sobre los protocolos de seguridad o las guías de prácticas?</div>
+      </div>
+      <div style="padding:0.75rem;border-top:1px solid var(--gray-200);display:flex;gap:0.5rem">
+        <input type="text" id="floating-ai-input" placeholder="Pregunta sobre las guías..." style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--gray-200);border-radius:8px;font-size:0.85rem;outline:none" />
+        <button type="button" id="floating-ai-send" style="border:none;border-radius:8px;background:var(--blue);color:#fff;padding:0 0.85rem;font-size:0.82rem;font-weight:600;cursor:pointer">Enviar</button>
+      </div>
+    </div>
+
+    <!-- Modal de Feedback MCPI (Bidireccional) -->
+    <style>
+      .mcpi-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 200; align-items: center; justify-content: center; overflow-y: auto; padding: 1rem; }
+      .mcpi-modal-overlay.open { display: flex; }
+      .mcpi-modal-box { background: #fff; border-radius: 20px; padding: 1.75rem; max-width: 580px; width: 100%; box-shadow: 0 20px 60px rgba(15,23,42,0.35); position: relative; max-height: 90vh; overflow-y: auto; }
+      .mcpi-modal-box .close-btn { position: absolute; top: 0.85rem; right: 0.85rem; border: none; background: #f3f4f6; border-radius: 8px; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: #6b7280; }
+      .mcpi-modal-box h3 { margin: 0 0 0.2rem; font-size: 1.2rem; color: var(--gray-900); }
+      .mcpi-modal-box .mcpi-sub { font-size: 0.82rem; color: #6b7280; margin-bottom: 1.25rem; }
+    </style>
+    <div class="mcpi-modal-overlay" id="mcpi-modal-overlay" role="dialog" aria-modal="true">
+      <div class="mcpi-modal-box">
+        <button class="close-btn" id="mcpi-modal-close" aria-label="Cerrar">✕</button>
+        <h3 id="mcpi-modal-title">Formulario de Feedback de la Rotación (MCPI)</h3>
+        <div class="mcpi-sub" id="mcpi-modal-sub">Por favor, valora la calidad docente de tu rotación finalizada.</div>
+        
+        <form id="mcpi-form" onsubmit="return false;" class="feedback-form">
+          <div style="background:#eff6ff;padding:0.75rem 1rem;border-radius:10px;font-size:0.8rem;color:#1e40af;line-height:1.4">
+            <strong>Escala de valoración:</strong> 1 = Totalmente en desacuerdo, 7 = Totalmente de acuerdo. Las respuestas son confidenciales y se liberarán en doble ciego.
+          </div>
+
+          <h4 style="margin:0.5rem 0 0;font-size:0.95rem;color:var(--blue)">Bloque A: Clima de Aprendizaje</h4>
+          <div class="likert-row"><label>A1. La dirección y organización del servicio facilitó mi aprendizaje.</label><div class="likert-scale" data-mcpi="A1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>A2. Me sentí bien acogido por el equipo clínico desde el primer día.</label><div class="likert-scale" data-mcpi="A2"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>A3. El personal del servicio me dio apoyo durante la rotación.</label><div class="likert-scale" data-mcpi="A3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>A4. Las instalaciones y recursos del servicio fueron adecuados para aprender.</label><div class="likert-scale" data-mcpi="A4"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>A5. La rotación estuvo bien organizada (horarios, circuito, etc.).</label><div class="likert-scale" data-mcpi="A5"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+
+          <h4 style="margin:0.5rem 0 0;font-size:0.95rem;color:var(--blue)">Bloque B: Enseñanza Recibida</h4>
+          <div class="likert-row"><label>B1. Recibí instrucción activa y docencia de mi tutor/equipo.</label><div class="likert-scale" data-mcpi="B1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>B2. Mi tutor me observó directamente realizando tareas clínicas.</label><div class="likert-scale" data-mcpi="B2"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>B3. Recibí feedback periódico, específico y útil sobre mi desempeño.</label><div class="likert-scale" data-mcpi="B3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+
+          <h4 style="margin:0.5rem 0 0;font-size:0.95rem;color:var(--blue)">Bloque C: Preparación y Objetivos</h4>
+          <div class="likert-row"><label>C1. Llegué a esta rotación con objetivos claros de lo que quería aprender.</label><div class="likert-scale" data-mcpi="C1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>C2. Me sentí bien integrado como miembro activo del equipo clínico.</label><div class="likert-scale" data-mcpi="C2"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+
+          <h4 style="margin:0.5rem 0 0;font-size:0.95rem;color:var(--blue)">Bloque D: Mediloop (TAM)</h4>
+          <div class="likert-row"><label>D1. Mediloop me ayudó a prepararme mejor para esta rotación.</label><div class="likert-scale" data-mcpi="D1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>D2. Utilizaría Mediloop en mis futuros rotatorios.</label><div class="likert-scale" data-mcpi="D2"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+          <div class="likert-row"><label>D3. Recomendaría Mediloop a otros estudiantes de medicina.</label><div class="likert-scale" data-mcpi="D3"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+
+          <h4 style="margin:0.5rem 0 0;font-size:0.95rem;color:var(--blue)">Valoración Global</h4>
+          <div class="likert-row"><label>G1. En general, ¿cómo calificarías tu experiencia de aprendizaje en esta rotación?</label><div class="likert-scale" data-mcpi="G1"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div>
+
+          <div style="margin-top:0.75rem">
+            <label style="font-weight:600;font-size:0.85rem">Aspectos positivos observados (mínimo 20 caracteres):</label>
+            <textarea id="mcpi-positive" style="margin-top:0.35rem" placeholder="Escribe aquí los puntos fuertes de la docencia en este servicio..." rows="2"></textarea>
+          </div>
+
+          <div style="margin-top:0.75rem">
+            <label style="font-weight:600;font-size:0.85rem">Aspectos a mejorar en el servicio (mínimo 20 caracteres):</label>
+            <textarea id="mcpi-negative" style="margin-top:0.35rem" placeholder="Escribe aquí las áreas de mejora observadas..." rows="2"></textarea>
+          </div>
+
+          <button type="button" class="btn-gradient" id="btn-submit-mcpi" style="margin-top:1.25rem;width:100%;padding:0.75rem">Enviar Feedback Double-Blind</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal registrar asistencia ──────────────────────────────────────── -->
+    <style>
+      .att-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55); z-index: 200; align-items: center; justify-content: center; }
+      .att-modal-overlay.open { display: flex; }
+      .att-modal-box { background: #fff; border-radius: 20px; padding: 1.75rem; max-width: 340px; width: 90%; box-shadow: 0 20px 60px rgba(15,23,42,0.35); position: relative; }
+      .att-modal-box .close-btn { position: absolute; top: 0.85rem; right: 0.85rem; border: none; background: #f3f4f6; border-radius: 8px; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: #6b7280; }
+      .att-modal-box h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+      .att-modal-box .att-sub { font-size: 0.82rem; color: #6b7280; margin-bottom: 1.25rem; }
+      .att-modal-sep { border: none; border-top: 1px solid #e5e7eb; margin: 1rem 0; }
+      .att-modal-box .att-msg { font-size: 0.85rem; padding: 0.6rem 0.85rem; border-radius: 10px; margin-bottom: 0.75rem; display: none; }
+      .att-modal-box .att-msg.error { display: block; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+      .att-modal-box .att-msg.success { display: block; background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+      .btn-simulate { width: 100%; border: none; border-radius: 10px; padding: 0.75rem; font-size: 0.9rem; font-weight: 600; background: linear-gradient(90deg,#2563eb,#4f46e5); color: #fff; cursor: pointer; }
+      .btn-simulate:disabled { opacity: 0.6; cursor: not-allowed; }
+      .att-or { text-align: center; font-size: 0.8rem; color: #9ca3af; margin: 0.75rem 0; }
+      .att-token-row { display: flex; gap: 0.5rem; }
+      .att-token-row input { flex: 1; padding: 0.6rem 0.75rem; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 0.85rem; outline: none; }
+      .att-token-row input:focus { border-color: #4f46e5; }
+      .att-token-row button { border: none; border-radius: 10px; background: #4f46e5; color: #fff; font-size: 0.82rem; font-weight: 600; padding: 0 0.9rem; cursor: pointer; white-space: nowrap; }
+    </style>
+    <div class="att-modal-overlay" id="att-modal-overlay" role="dialog" aria-modal="true">
+      <div class="att-modal-box">
+        <button class="close-btn" id="att-modal-close" aria-label="Cerrar">✕</button>
+        <h3 id="att-modal-title">Registrar asistencia</h3>
+        <div class="att-sub" id="att-modal-sub"></div>
+        <div class="att-msg" id="att-msg"></div>
+        <button type="button" class="btn-simulate" id="btn-simulate">📲 Simular escaneo</button>
+        <div class="att-or">— o introduce el código del QR —</div>
+        <div class="att-token-row">
+          <input type="text" id="att-token-input" placeholder="Código QR del tutor" />
+          <button type="button" id="btn-submit-token">Enviar</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var API_BASE = window.location.hostname === "localhost" ? "http://localhost:4000/api" : "/api";
+        function getToken() { try { return JSON.parse(localStorage.getItem("mediloop.session") || "{}").token || ""; } catch (_) { return ""; } }
+        function authHdr() { return { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() }; }
+
+        var overlay    = document.getElementById("att-modal-overlay");
+        var closeBtn   = document.getElementById("att-modal-close");
+        var titleEl    = document.getElementById("att-modal-title");
+        var subEl      = document.getElementById("att-modal-sub");
+        var msgEl      = document.getElementById("att-msg");
+        var simBtn     = document.getElementById("btn-simulate");
+        var tokenInput = document.getElementById("att-token-input");
+        var submitTok  = document.getElementById("btn-submit-token");
+
+        var activeRotId = null;
+
+        function showAttMsg(type, text) { msgEl.className = "att-msg " + type; msgEl.textContent = text; }
+        function clearAttMsg() { msgEl.className = "att-msg"; msgEl.textContent = ""; }
+
+        function openAttModal(rotationId, service, hospital) {
+          activeRotId = rotationId;
+          titleEl.textContent = service || "Registrar asistencia";
+          subEl.textContent = hospital || "";
+          clearAttMsg();
+          tokenInput.value = "";
+          simBtn.disabled = false;
+          simBtn.textContent = "📲 Simular escaneo";
+          overlay.classList.add("open");
+        }
+
+        // Exponer para que renderAsistenciaQR() pueda llamarla
+        window.openAttModal = openAttModal;
+
+        function onSuccess(area) {
+          showAttMsg("success", "Asistencia registrada en: " + area + ". Pendiente de confirmación del tutor.");
+          simBtn.disabled = true;
+          submitTok.disabled = true;
+          // Recargar el historial después de 1.5s
+          setTimeout(function() {
+            overlay.classList.remove("open");
+            // Disparar recarga del historial si está disponible
+            if (window._loadNovedades) window._loadNovedades();
+          }, 1800);
+        }
+
+        simBtn.addEventListener("click", function() {
+          if (!activeRotId) return;
+          simBtn.disabled = true;
+          simBtn.textContent = "Registrando...";
+          clearAttMsg();
+          fetch(API_BASE + "/attendance/simulate", {
+            method: "POST",
+            headers: authHdr(),
+            body: JSON.stringify({ rotationId: activeRotId })
+          })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+              if (!result.ok) { showAttMsg("error", result.data.message || "No se pudo registrar."); simBtn.disabled = false; simBtn.textContent = "📲 Simular escaneo"; return; }
+              onSuccess(result.data.area || "tu rotación");
+            })
+            .catch(function() { showAttMsg("error", "Error de conexión."); simBtn.disabled = false; simBtn.textContent = "📲 Simular escaneo"; });
+        });
+
+        submitTok.addEventListener("click", function() {
+          var tok = tokenInput.value.trim();
+          if (!tok) { showAttMsg("error", "Introduce el código QR."); return; }
+          submitTok.disabled = true;
+          clearAttMsg();
+          fetch(API_BASE + "/attendance/qr-checkin", {
+            method: "POST",
+            headers: authHdr(),
+            body: JSON.stringify({ token: tok })
+          })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+              if (!result.ok) { showAttMsg("error", result.data.message || "QR inválido o expirado."); submitTok.disabled = false; return; }
+              onSuccess("tu rotación");
+            })
+            .catch(function() { showAttMsg("error", "Error de conexión."); submitTok.disabled = false; });
+        });
+
+        closeBtn.addEventListener("click", function() { overlay.classList.remove("open"); });
+        overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.classList.remove("open"); });
+      })();
+    </script>
+
+    <!-- Modal Perfil ─────────────────────────────────────────────────────── -->
+    <div id="perfil-overlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:300;align-items:center;justify-content:center">
+      <div style="background:#fff;border-radius:20px;padding:2rem 1.75rem 1.5rem;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(15,23,42,0.35);position:relative">
+        <button id="perfil-close" style="position:absolute;top:0.85rem;right:0.85rem;border:none;background:#f3f4f6;border-radius:8px;width:32px;height:32px;font-size:1rem;cursor:pointer;color:#6b7280">✕</button>
+        <h3 style="margin:0 0 1.25rem;font-size:1.05rem">Mi perfil</h3>
+        <div id="perfil-datos" style="margin-bottom:1rem;font-size:0.88rem;color:#374151;background:#f9fafb;border-radius:10px;padding:0.85rem 1rem">
+          <div style="margin-bottom:0.4rem"><strong>Nombre:</strong> <span id="perfil-nombre-show">—</span></div>
+          <div style="margin-bottom:0.4rem"><strong>Email:</strong> <span id="perfil-email-show">—</span></div>
+          <div><strong>Rol:</strong> <span id="perfil-rol-show">—</span></div>
+        </div>
+        <div style="margin-bottom:0.75rem">
+          <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:0.3rem">Cambiar nombre</label>
+          <div style="display:flex;gap:0.5rem">
+            <input id="perfil-nombre-input" type="text" style="flex:1;padding:0.55rem 0.75rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.88rem;outline:none" placeholder="Tu nombre completo" />
+            <button id="perfil-nombre-btn" style="border:none;border-radius:10px;background:#4f46e5;color:#fff;font-size:0.82rem;font-weight:600;padding:0 0.9rem;cursor:pointer;white-space:nowrap">Guardar</button>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:1rem 0">
+        <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:0.5rem">Cambiar contraseña</label>
+        <div style="position:relative;margin-bottom:0.4rem">
+          <input id="perfil-pass-actual" type="password" style="width:100%;padding:0.55rem 2.5rem 0.55rem 0.75rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.88rem;outline:none;box-sizing:border-box" placeholder="Contraseña actual" />
+          <button type="button" onclick="(function(b){var i=document.getElementById('perfil-pass-actual');i.type=i.type==='text'?'password':'text';b.textContent=i.type==='text'?'🙈':'👁';})(this)" style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;line-height:1;padding:0.1rem;color:#9ca3af" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div style="position:relative;margin-bottom:0.5rem">
+          <input id="perfil-pass-nueva" type="password" style="width:100%;padding:0.55rem 2.5rem 0.55rem 0.75rem;border:1px solid #e5e7eb;border-radius:10px;font-size:0.88rem;outline:none;box-sizing:border-box" placeholder="Nueva contraseña (mín. 6)" />
+          <button type="button" onclick="(function(b){var i=document.getElementById('perfil-pass-nueva');i.type=i.type==='text'?'password':'text';b.textContent=i.type==='text'?'🙈':'👁';})(this)" style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1rem;line-height:1;padding:0.1rem;color:#9ca3af" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div id="perfil-msg" style="font-size:0.82rem;padding:0.5rem 0.75rem;border-radius:8px;display:none;margin-bottom:0.5rem"></div>
+        <button id="perfil-pass-btn" style="width:100%;border:none;border-radius:10px;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;font-size:0.88rem;font-weight:600;padding:0.65rem;cursor:pointer">Cambiar contraseña</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var API_BASE = window.location.hostname === "localhost" ? "http://localhost:4000/api" : "/api";
+        function getToken() { try { return JSON.parse(localStorage.getItem("mediloop.session") || "{}").token || ""; } catch (_) { return ""; } }
+        function authHdr2() { return { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() }; }
+
+        var overlay = document.getElementById("perfil-overlay");
+        var msgEl   = document.getElementById("perfil-msg");
+
+        function showPerfilMsg(type, text) {
+          msgEl.style.display = "block";
+          msgEl.style.background = type === "error" ? "#fef2f2" : "#f0fdf4";
+          msgEl.style.color      = type === "error" ? "#dc2626"  : "#16a34a";
+          msgEl.style.border     = "1px solid " + (type === "error" ? "#fecaca" : "#bbf7d0");
+          msgEl.textContent = text;
+        }
+
+        function openPerfil() {
+          msgEl.style.display = "none";
+          overlay.style.display = "flex";
+          fetch(API_BASE + "/auth/me", { headers: authHdr2() })
+            .then(function(r) { return r.json(); })
+            .then(function(u) {
+              document.getElementById("perfil-nombre-show").textContent = u.name || "—";
+              document.getElementById("perfil-email-show").textContent  = u.email || "—";
+              document.getElementById("perfil-rol-show").textContent    = u.role === "student" ? "Alumno" : u.role === "tutor" ? "Tutor" : u.role;
+              document.getElementById("perfil-nombre-input").value = u.name || "";
+              var btn = document.getElementById("btn-perfil-alumno");
+              if (btn && u.name) btn.textContent = u.name.charAt(0).toUpperCase();
+            });
+        }
+
+        document.getElementById("btn-perfil-alumno").addEventListener("click", openPerfil);
+        document.getElementById("perfil-close").addEventListener("click", function() { overlay.style.display = "none"; });
+        overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.style.display = "none"; });
+
+        document.getElementById("perfil-nombre-btn").addEventListener("click", function() {
+          var name = document.getElementById("perfil-nombre-input").value.trim();
+          if (!name) return;
+          fetch(API_BASE + "/auth/profile", { method: "PUT", headers: authHdr2(), body: JSON.stringify({ name: name }) })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+              if (!res.ok) { showPerfilMsg("error", res.data.message || "Error al guardar."); return; }
+              document.getElementById("perfil-nombre-show").textContent = res.data.name;
+              var btn = document.getElementById("btn-perfil-alumno");
+              if (btn) btn.textContent = res.data.name.charAt(0).toUpperCase();
+              var nameH = document.getElementById("user-name-header");
+              if (nameH) nameH.textContent = res.data.name.split(" ")[0];
+              try { var s = JSON.parse(localStorage.getItem("mediloop.session")); s.user.name = res.data.name; localStorage.setItem("mediloop.session", JSON.stringify(s)); } catch(_) {}
+              showPerfilMsg("ok", "Nombre actualizado correctamente.");
+            })
+            .catch(function() { showPerfilMsg("error", "Error de conexión."); });
+        });
+
+        document.getElementById("perfil-pass-btn").addEventListener("click", function() {
+          var cur = document.getElementById("perfil-pass-actual").value;
+          var nw  = document.getElementById("perfil-pass-nueva").value;
+          if (!cur || !nw) { showPerfilMsg("error", "Completa ambos campos."); return; }
+          fetch(API_BASE + "/auth/password", { method: "PUT", headers: authHdr2(), body: JSON.stringify({ currentPassword: cur, newPassword: nw }) })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+              if (!res.ok) { showPerfilMsg("error", res.data.message || "Error al cambiar contraseña."); return; }
+              document.getElementById("perfil-pass-actual").value = "";
+              document.getElementById("perfil-pass-nueva").value  = "";
+              showPerfilMsg("ok", "Contraseña cambiada correctamente.");
+            })
+            .catch(function() { showPerfilMsg("error", "Error de conexión."); });
+        });
+
+        // Inicializar avatar desde sesión
+        try {
+          var sess = JSON.parse(localStorage.getItem("mediloop.session") || "{}");
+          if (sess.user && sess.user.name) {
+            var btn = document.getElementById("btn-perfil-alumno");
+            if (btn) btn.textContent = sess.user.name.charAt(0).toUpperCase();
+            var nameH = document.getElementById("user-name-header");
+            if (nameH) nameH.textContent = sess.user.name.split(" ")[0];
+          }
+        } catch(_) {}
+      })();
+    </script>
+
+    <script>
+      (function() {
+        var API_BASE = window.location.hostname === "localhost" ? "http://localhost:4000/api" : "/api";
+        function getToken() { try { return JSON.parse(localStorage.getItem("mediloop.session") || "{}").token || ""; } catch(_) { return ""; } }
+        function msgHdr() { return { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() }; }
+
+        var myId = null;
+        try { myId = JSON.parse(localStorage.getItem("mediloop.session") || "{}").user.id; } catch(_) {}
+
+        var activeContactId = null;
+
+        function fmtTime(iso) {
+          var d = new Date(iso);
+          var now = new Date();
+          var sameDay = d.toDateString() === now.toDateString();
+          if (sameDay) return d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+          return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+        }
+
+        function renderContacts(contacts) {
+          var el = document.getElementById("msg-contacts");
+          if (!contacts.length) { el.innerHTML = '<p style="padding:1rem;font-size:0.85rem;color:var(--gray-600)">No tienes tutores asignados aún.</p>'; return; }
+          el.innerHTML = contacts.map(function(c) {
+            var badge = c.unread > 0 ? '<span style="background:#ef4444;color:#fff;border-radius:9999px;font-size:0.65rem;padding:0 6px;font-weight:700">' + c.unread + '</span>' : '';
+            var preview = c.lastMessage ? '<div style="font-size:0.75rem;color:var(--gray-600);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">' + c.lastMessage.replace(/</g,"&lt;") + '</div>' : '<div style="font-size:0.75rem;color:var(--gray-600)">Sin mensajes aún</div>';
+            var active = c.id === activeContactId ? 'background:var(--gray-100);' : '';
+            return '<div class="msg-contact-item" data-id="' + c.id + '" data-name="' + c.name.replace(/"/g,"&quot;") + '" style="padding:0.75rem 1rem;cursor:pointer;border-bottom:1px solid var(--gray-200);' + active + '" onmouseover="this.style.background=\'var(--gray-100)\'" onmouseout="this.style.background=\'' + (c.id===activeContactId?'var(--gray-100)':'#fff') + '\'">'
+              + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">'
+              + '<span style="font-weight:600;font-size:0.9rem">' + c.name.replace(/</g,"&lt;") + '</span>' + badge + '</div>' + preview + '</div>';
+          }).join("");
+          el.querySelectorAll(".msg-contact-item").forEach(function(item) {
+            item.addEventListener("click", function() { openChat(this.dataset.id, this.dataset.name); });
+          });
+        }
+
+        function renderThread(msgs, myUserId) {
+          var el = document.getElementById("msg-chat-body");
+          if (!msgs.length) { el.innerHTML = '<p style="text-align:center;color:var(--gray-600);font-size:0.85rem;margin-top:2rem">No hay mensajes aún. ¡Escribe el primero!</p>'; return; }
+          el.innerHTML = msgs.map(function(m) {
+            var mine = m.from_id === myUserId;
+            return '<div style="display:flex;justify-content:' + (mine?"flex-end":"flex-start") + '">'
+              + '<div style="max-width:70%;background:' + (mine?"var(--blue)":"var(--gray-100)") + ';color:' + (mine?"#fff":"var(--gray-900)") + ';border-radius:' + (mine?"12px 12px 2px 12px":"12px 12px 12px 2px") + ';padding:0.5rem 0.85rem;font-size:0.88rem">'
+              + '<div>' + m.content.replace(/</g,"&lt;") + '</div>'
+              + '<div style="font-size:0.68rem;opacity:0.7;margin-top:2px;text-align:right">' + fmtTime(m.created_at) + '</div>'
+              + '</div></div>';
+          }).join("");
+          el.scrollTop = el.scrollHeight;
+        }
+
+        function openChat(userId, userName) {
+          activeContactId = userId;
+          document.getElementById("msg-chat-header").textContent = userName;
+          document.getElementById("msg-input").disabled = false;
+          document.getElementById("msg-send-btn").disabled = false;
+          document.getElementById("msg-input").focus();
+          loadThread();
+          loadContacts();
+        }
+
+        function loadThread() {
+          if (!activeContactId) return;
+          fetch(API_BASE + "/messages/thread/" + activeContactId, { headers: msgHdr() })
+            .then(function(r) { return r.json(); })
+            .then(function(msgs) { renderThread(msgs, myId); });
+        }
+
+        function loadContacts() {
+          fetch(API_BASE + "/messages/contacts", { headers: msgHdr() })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              renderContacts(data);
+              var total = data.reduce(function(s, c) { return s + c.unread; }, 0);
+              ["msg-badge-nav", "msg-badge-side"].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                if (total > 0) { el.textContent = total; el.style.display = "inline"; }
+                else { el.style.display = "none"; }
+              });
+            });
+        }
+
+        function sendMessage() {
+          var input = document.getElementById("msg-input");
+          var text = input.value.trim();
+          if (!text || !activeContactId) return;
+          input.value = "";
+          fetch(API_BASE + "/messages/thread/" + activeContactId, { method: "POST", headers: msgHdr(), body: JSON.stringify({ content: text }) })
+            .then(function() { loadThread(); loadContacts(); });
+        }
+
+        // Exponer globalmente para botones externos
+        window.openMsgChat = function(userId, userName) {
+          document.getElementById("mensajes").scrollIntoView({ behavior: "smooth" });
+          openChat(userId, userName);
+        };
+
+        // ── Buscador de tutores ──────────────────────────────────
+        var searchTimer = null;
+        var searchEl = document.getElementById("msg-search");
+        var searchRes = document.getElementById("msg-search-results");
+
+        searchEl.addEventListener("input", function() {
+          clearTimeout(searchTimer);
+          var q = searchEl.value.trim();
+          if (q.length < 2) { searchRes.style.display = "none"; return; }
+          searchTimer = setTimeout(function() {
+            fetch(API_BASE + "/messages/search-users?q=" + encodeURIComponent(q), { headers: msgHdr() })
+              .then(function(r) { return r.json(); })
+              .then(function(users) {
+                if (!users.length) {
+                  searchRes.innerHTML = '<div style="padding:0.6rem 0.9rem;font-size:0.82rem;color:var(--gray-600)">Sin resultados</div>';
+                } else {
+                  searchRes.innerHTML = users.map(function(u) {
+                    return '<div class="msg-search-item" data-id="' + u.id + '" data-name="' + u.name.replace(/"/g,'&quot;') + '" style="padding:0.55rem 0.9rem;cursor:pointer;font-size:0.85rem;border-bottom:1px solid var(--gray-200)" onmouseover="this.style.background=\'var(--gray-100)\'" onmouseout="this.style.background=\'#fff\'">'
+                      + '<div style="font-weight:600">' + u.name.replace(/</g,'&lt;') + '</div>'
+                      + '<div style="font-size:0.75rem;color:var(--gray-600)">' + u.email + '</div>'
+                      + '</div>';
+                  }).join("");
+                }
+                searchRes.style.display = "block";
+                searchRes.querySelectorAll(".msg-search-item").forEach(function(item) {
+                  item.addEventListener("click", function() {
+                    openChat(item.dataset.id, item.dataset.name);
+                    searchEl.value = "";
+                    searchRes.style.display = "none";
+                  });
+                });
+              });
+          }, 250);
+        });
+
+        document.addEventListener("click", function(e) {
+          if (!searchEl.contains(e.target) && !searchRes.contains(e.target)) searchRes.style.display = "none";
+        });
+
+        document.getElementById("msg-send-btn").addEventListener("click", sendMessage);
+        document.getElementById("msg-input").addEventListener("keydown", function(e) { if (e.key === "Enter") sendMessage(); });
+
+        loadContacts();
+        setInterval(function() {
+          loadContacts();
+          if (activeContactId) loadThread();
+        }, 15000);
+
+        function pollUnread() {
+          fetch(API_BASE + "/messages/unread-count", { headers: msgHdr() })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+              ["msg-badge-nav", "msg-badge-side"].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                if (d.count > 0) { el.textContent = d.count; el.style.display = "inline"; }
+                else { el.style.display = "none"; }
+              });
+            }).catch(function() {});
+        }
+        setInterval(pollUnread, 30000);
+        pollUnread();
+      })();
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: mediloop-db
+    restart: always
+    environment:
+      POSTGRES_DB: mediloop
+      POSTGRES_USER: mediloop_user
+      POSTGRES_PASSWORD: mediloop_secure_pass_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mediloop-web
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=postgresql://mediloop_user:mediloop_secure_pass_2026@db:5432/mediloop?schema=public
+      - JWT_SECRET=mediloop-secret-production-uji-2027
+      - PORT=4000
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

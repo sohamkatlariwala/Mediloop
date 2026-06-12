@@ -1,0 +1,251 @@
+openapi: 3.0.3
+info:
+  title: Mediloop v4.0 API Reference
+  description: Complete REST API specification for Mediloop clinical rotations, educational support, RAG assistant, and research analytics platform.
+  version: 4.0.0
+servers:
+  - url: http://localhost:4000/api
+    description: Local development server
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Registers a student or tutor. Email must end with @uji.es.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - name
+                - password
+                - role
+              properties:
+                email:
+                  type: string
+                  example: student@uji.es
+                name:
+                  type: string
+                  example: Ana Martínez
+                password:
+                  type: string
+                  example: securePassword123
+                role:
+                  type: string
+                  enum: [student, tutor, coordinator, admin]
+                nia:
+                  type: string
+                  example: "429440"
+                curso:
+                  type: integer
+                  example: 4
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Invalid data or email domain restricted
+
+  /auth/login:
+    post:
+      summary: Login user
+      description: Authenticate user and return access and refresh tokens.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: student@uji.es
+                password:
+                  type: string
+                  example: securePassword123
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  refreshToken:
+                    type: string
+
+  /prep/modules/{serviceId}:
+    get:
+      summary: Get pre-rotation preparation module
+      description: Returns service guide, objectives, tutor expectations, patient safety rules, diagnoses, and useful resources.
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prep module details
+        '404':
+          description: Prep module not found
+
+  /prep/modules/{serviceId}/access:
+    post:
+      summary: Log prep module access
+      description: Records student prep module access timestamp.
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Access logged successfully
+
+  /prep/checklist/{itemIndex}:
+    put:
+      summary: Toggle competence checklist item
+      description: Set completion state for prep guide checklist item.
+      parameters:
+        - name: itemIndex
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - isAcquired
+              properties:
+                isAcquired:
+                  type: boolean
+      responses:
+        '200':
+          description: Checklist item updated successfully
+
+  /prep/assessments:
+    post:
+      summary: Submit EPA Self-Assessment
+      description: Record T0, T1, or retro_T0 assessment scores on the Chen Entrustment scale.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rotationId
+                - timepoint
+                - answers
+              properties:
+                rotationId:
+                  type: string
+                timepoint:
+                  type: string
+                  enum: [T0, T1, retro_T0]
+                answers:
+                  type: object
+                  additionalProperties:
+                    type: integer
+                    minimum: 1
+                    maximum: 5
+                goals:
+                  type: string
+      responses:
+        '201':
+          description: Self-assessment saved successfully
+
+  /evaluations/student:
+    post:
+      summary: Submit Tutor-to-Student Mini-CEX
+      description: Submit 7-criteria Mini-CEX evaluation of a student with Ottawa rules enforcement and comment length constraints.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rotationId
+                - rubricId
+                - answers
+                - strengthText
+                - improvementText
+              properties:
+                rotationId:
+                  type: string
+                rubricId:
+                  type: string
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - criterionId
+                      - valor
+                    properties:
+                      criterionId:
+                        type: string
+                      valor:
+                        type: integer
+                      comentario:
+                        type: string
+                strengthText:
+                  type: string
+                  minLength: 30
+                improvementText:
+                  type: string
+                  minLength: 30
+                autonomyDecision:
+                  type: string
+      responses:
+        '201':
+          description: Evaluation submitted successfully, returns Ottawa progression output
+        '400':
+          description: Comments too short (< 30 chars) or missing criteria
+
+  /feedback/submit:
+    post:
+      summary: Submit bidirectional double-blind feedback
+      description: Submit MCPI (student) or SETQ (tutor) rotation quality feedback.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rotationId
+                - answers
+              properties:
+                rotationId:
+                  type: string
+                answers:
+                  type: object
+      responses:
+        '201':
+          description: Feedback submitted successfully
+
+  /analytics/export-spss:
+    get:
+      summary: Export SPSS-compatible CSV
+      description: Fetch research analytics CSV containing checklists, feedback, and T0/T1 delta scores for SPSS import.
+      responses:
+        '200':
+          description: Returns standard CSV file download
+          content:
+            text/csv:
+              schema:
+                type: string

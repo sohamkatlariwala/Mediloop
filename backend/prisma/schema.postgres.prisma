@@ -1,0 +1,357 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                   String            @id @default(uuid())
+  email                String            @unique
+  name                 String
+  role                 String // Stored as String for SQLite/PostgreSQL compatibility
+  passwordHash         String
+  isVerified           Boolean           @default(false)
+  verificationToken    String?
+  resetToken           String?           @unique
+  resetTokenExpires    DateTime?
+  refreshToken         String?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  
+  studentProfile       Student?
+  tutorProfile         Tutor?
+  sentMessages         Message[]         @relation("SentMessages")
+  receivedMessages     Message[]         @relation("ReceivedMessages")
+  reportedIncidents    Incident[]        @relation("Reporter")
+  resolvedIncidents    Incident[]        @relation("Resolver")
+  auditLogs            AuditLog[]
+  evaluations          Evaluation[]      @relation("Evaluator")
+}
+
+model Student {
+  id                String            @id @default(uuid())
+  userId            String            @unique
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nia               String            @unique
+  curso             Int
+  grupo             String?
+  planEstudios      String?
+  rotations         Rotation[]
+  checklists        PrepChecklist[]
+  accessLogs        PrepAccessLog[]
+  studyGroups       StudyGroupMember[]
+}
+
+model Tutor {
+  id                String            @id @default(uuid())
+  userId            String            @unique
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  especialidad      String?
+  servicioPrincipal String?
+  hospitalId        String?
+  hospital          Hospital?         @relation(fields: [hospitalId], references: [id])
+  rotations         Rotation[]
+  resources         TeachingResource[]
+}
+
+model Hospital {
+  id          String      @id @default(uuid())
+  nombre      String      @unique
+  tipo        String
+  direccion   String?
+  ciudad      String?
+  lat         Float?
+  lng         Float?
+  website     String?
+  contact     String?
+  logoUrl     String?
+  isArchived  Boolean     @default(false)
+  tutors      Tutor[]
+  services    Service[]
+  rotations   Rotation[]
+}
+
+model Service {
+  id          String      @id @default(uuid())
+  hospitalId  String
+  hospital    Hospital    @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  nombre      String
+  tipo        String?
+  rotations   Rotation[]
+  prepModules PrepModule[]
+}
+
+model Rotation {
+  id               String            @id @default(uuid())
+  studentId        String?
+  student          Student?          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  tutorId          String
+  tutor            Tutor             @relation(fields: [tutorId], references: [id])
+  hospitalId       String
+  hospital         Hospital          @relation(fields: [hospitalId], references: [id])
+  serviceId        String
+  service          Service           @relation(fields: [serviceId], references: [id])
+  startDate        DateTime
+  endDate          DateTime
+  academicYear     String
+  status           String            @default("planificada")
+  
+  practiceSessions PracticeSession[]
+  practiceReport   PracticeReport?
+  incidents        Incident[]
+  evaluations      Evaluation[]
+  selfAssessments  SelfAssessment[]
+  feedbacks        PostRotationFeedback[]
+}
+
+model PracticeSession {
+  id               String            @id @default(uuid())
+  rotationId       String
+  rotation         Rotation          @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  fecha            DateTime
+  turno            String // "manana", "tarde", "noche"
+  qrToken          String?           @unique
+  estadoAsistencia String            @default("pendiente")
+  observaciones    String?
+  validatedAt      DateTime?
+}
+
+model PracticeReport {
+  id                  String            @id @default(uuid())
+  rotationId          String            @unique
+  rotation            Rotation          @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  horasTotales        Int
+  resumen             String?
+  estadoFirma         String            @default("borrador")
+  firmaEstudianteAt   DateTime?
+  firmaTutorAt        DateTime?
+}
+
+model Rubric {
+  id          String            @id @default(uuid())
+  nombre      String
+  descripcion String?
+  tipo        String
+  activo      Boolean           @default(true)
+  criteria    RubricCriterion[]
+  evaluations Evaluation[]
+}
+
+model RubricCriterion {
+  id          String             @id @default(uuid())
+  rubricId    String
+  rubric      Rubric             @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  nombre      String
+  descripcion String?
+  peso        Float?
+  minValor    Int                @default(1)
+  maxValor    Int                @default(5)
+  answers     EvaluationAnswer[]
+}
+
+model Evaluation {
+  id                  String             @id @default(uuid())
+  rubricId            String
+  rubric              Rubric             @relation(fields: [rubricId], references: [id])
+  rotationId          String
+  rotation            Rotation           @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  evaluadorId         String
+  evaluador           User               @relation("Evaluator", fields: [evaluadorId], references: [id])
+  evaluadoTipo        String // "student", "tutor", "hospital"
+  evaluadoId          String
+  estado              String             @default("borrador")
+  comentariosGenerales String?
+  totalScore          Float?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  answers             EvaluationAnswer[]
+}
+
+model EvaluationAnswer {
+  id           String          @id @default(uuid())
+  evaluationId String
+  evaluation   Evaluation      @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  criterionId  String
+  criterion    RubricCriterion @relation(fields: [criterionId], references: [id])
+  valor        Int
+  comentario   String?
+}
+
+model Incident {
+  id           String          @id @default(uuid())
+  reporterId   String
+  reporter     User            @relation("Reporter", fields: [reporterId], references: [id])
+  rotationId   String
+  rotation     Rotation        @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  tipo         String // "docente", "organizativa", "logistica", "seguridad_paciente", "otro"
+  descripcion  String
+  estado       String          @default("abierta")
+  resolverId   String?
+  resolver     User?           @relation("Resolver", fields: [resolverId], references: [id])
+  resolverNotes String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  fromId    String
+  fromUser  User     @relation("SentMessages", fields: [fromId], references: [id])
+  toId      String
+  toUser    User     @relation("ReceivedMessages", fields: [toId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+}
+
+model TeachingResource {
+  id         String   @id @default(uuid())
+  tutorId    String
+  tutor      Tutor    @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+  title      String
+  url        String
+  type       String
+  tags       String // SQLite/PostgreSQL dynamic array representation
+  specialty  String
+  createdAt  DateTime @default(now())
+}
+
+model PrepModule {
+  id             String          @id @default(uuid())
+  serviceId      String          @unique
+  service        Service         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  guide          String
+  objectives     String
+  expectations   String
+  diagnoses      String
+  safetyGuide    String
+  resources      String
+  createdAt      DateTime        @default(now())
+  accessLogs     PrepAccessLog[]
+}
+
+model PrepAccessLog {
+  id           String     @id @default(uuid())
+  moduleId     String
+  module       PrepModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  accessedAt   DateTime   @default(now())
+}
+
+model PrepChecklist {
+  id           String     @id @default(uuid())
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  itemIndex    Int
+  isAcquired   Boolean    @default(false)
+  updatedAt    DateTime   @updatedAt
+}
+
+model SelfAssessment {
+  id         String   @id @default(uuid())
+  rotationId String
+  rotation   Rotation @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  timepoint  String // "T0", "T1", "retro_T0"
+  answers    String // JSON representation
+  goals      String?
+  createdAt  DateTime @default(now())
+}
+
+model PostRotationFeedback {
+  id         String   @id @default(uuid())
+  rotationId String
+  rotation   Rotation @relation(fields: [rotationId], references: [id], onDelete: Cascade)
+  type       String // "student", "tutor"
+  answers    String // JSON representation
+  submittedAt DateTime @default(now())
+}
+
+model VirtualPatientCase {
+  id             String                  @id @default(uuid())
+  title          String
+  description    String
+  specialty      String
+  systemPrompt   String
+  initialMessage String
+  hiddenDiagnosis String
+  scoringRubric  String // JSON representation
+  sessions       VirtualPatientSession[]
+}
+
+model VirtualPatientSession {
+  id          String             @id @default(uuid())
+  caseId      String
+  case        VirtualPatientCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  studentId   String
+  transcript  String // JSON representation
+  score       Float?
+  feedback    String?
+  isCompleted Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  action     String
+  details    String?
+  ip         String?
+  createdAt  DateTime @default(now())
+}
+
+model StudentPost {
+  id        String   @id @default(uuid())
+  author    String
+  text      String
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model TutorPost {
+  id        String   @id @default(uuid())
+  author    String
+  text      String
+  likes     Int      @default(0)
+  comments  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model StudyGroup {
+  id          String             @id @default(uuid())
+  name        String
+  description String?
+  creatorId   String
+  createdAt   DateTime           @default(now())
+  members     StudyGroupMember[]
+}
+
+model StudyGroupMember {
+  groupId   String
+  group     StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime   @default(now())
+
+  @@id([groupId, studentId])
+}
+
+model Course {
+  id        String    @id @default(uuid())
+  name      String
+  year      Int       // 2 to 6
+  createdAt DateTime  @default(now())
+  subjects  Subject[]
+}
+
+model Subject {
+  id        String   @id @default(uuid())
+  name      String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
