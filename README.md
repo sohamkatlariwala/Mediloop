@@ -156,3 +156,5 @@ Mediloop se articula en torno a la investigación científica de la Universitat 
 ## 📬 Contacto e Información de Investigación
 *   **Investigador Principal**: Antonio Pineda Guerrero · [al429440@uji.es](mailto:al429440@uji.es) · ORCID [0009-0008-0704-1135](https://orcid.org/0009-0008-0704-1135)
 *   **Supervisor Académico**: Vicente J. Pallarés Carratalà · PDI Departamento de Medicina FCS-UJI
+*   **Asistencia en el Desarrollo**: Soham Biren Katlariwala · [24f1000637@ds.study.iitm.ac.in](mailto:24f1000637@ds.study.iitm.ac.in) · ORCID [0009-0008-1178-6543](https://orcid.org/0009-0008-1178-6543)
+
